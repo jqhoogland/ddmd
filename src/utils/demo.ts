@@ -20,6 +20,7 @@ $id: textarea
 title: 📚 Text (long)
 description: Go ahead, write something longer...
 type: text
+rows: 5
 \`\`\`  
 
 ---
@@ -45,11 +46,21 @@ $id: range
 title: "⭕️ Range"
 description: Choose a number out of a range.
 type: range
+min: 0
+max: 10
+step: 1
+ticks: true
+
 ---
-$id: quantity
-title: "🏔 Double range."
-description: Choose two numbers out of a range.
+$id: range_2
+title: "⭕️ Range 2"
+description: Choose a number out of a range.
 type: range
+min: 1
+max: 10
+step: 1
+ticks: [😭, null, 😞, null, 😑, null, 😊, null, 😁]
+
 
 \`\`\`
 
@@ -93,12 +104,18 @@ $id: radio
 title: 🔘 Dropdown (single)
 description: Select one option (and only one!).
 enum: 
-- title: hello
-  value: 1
-- title: "what's up"
-  value: 2
-- title: Another choice
-  value: 3
+- label: An option group
+  enum: 
+  - title: hello
+    value: 1
+  - title: "what's up"
+    value: 2
+- label: Another option group
+  enum:    
+  - title: Another choice
+    value: 3
+
+variant: dropdown  
 ---
 $id: checkbox
 title: ☑️ Dropdown (multiple)
@@ -113,7 +130,28 @@ items:
   - title: Another choice
     value: 3
 
+variant: dropdown
+
 \`\`\`  
+
+---
+
+\`\`\`question
+$id: radio
+title: 🔘 Autocomplete (single)
+description: Select one option (and only one!).
+enum: 
+- title: hello
+  value: 1
+- title: "what's up"
+  value: 2
+- title: Another choice
+  value: 3
+
+variant: autocomplete  
+
+\`\`\`  
+
 
 ---
 
@@ -123,6 +161,22 @@ title: 🔲 Button
 description: Push to toggle.
 type: boolean
 label: Push me 
+variant: button
+
+---
+
+$id: radio-buttons
+title: 🔘 Toggle Buttons
+description: Select an option
+enum: 
+- title: hello
+  value: 1
+- title: "what's up"
+  value: 2
+- title: Another choice
+  value: 3
+
+variant: button
 
 \`\`\`  
 ---

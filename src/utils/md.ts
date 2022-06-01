@@ -51,19 +51,49 @@ export const mdSx: SxProps = {
     fontSize: ".75rem",
     pb: 0.5
   },
-  ".form-radio,.form-checkbox": {
+  ".form-choices": {
     display: "flex",
     flexDirection: ["column", "row"],
     alignItems: "baseline"
   },
-  ".form-radio label, .form-checkbox label": {
+  ".form-choices label": {
     pl: 0.75,
   },
-  ".form-field > .form-radio :not(.form-radio-item:last-child), .form-field > .form-checkbox :not(.form-checkbox-item:last-child)": {
+  ".form-field > .form-choices.radio :not(.form-choices-item:last-child)": {
     pr: 5
   },
   label: {
     mt: 0.5
+  },
+  ".form-dropdown select, .form-autocomplete input": {
+    width: "100%"
+  },
+  ".toggle-button label": {
+    borderRadius: "4px",
+    width: "100%",
+    pr: 1
+  },
+  ".form-choices-item.toggle-button input": {
+    display: "none",
+  },
+  ".form-choices-item.toggle-button label": {
+      border: "1px solid #888",
+      padding: "5px 10px",
+      background: "var(--nc-bg-2)"
+  },
+  ".form-choices-item.toggle-button label:hover": {
+      background: "var(--nc-bg-3)",
+  },
+  ".form-choices-item.toggle-button label:active, .form-choices-item.toggle-button input:focus + label": {
+      background: "var(--nc-bg-3)",
+  },
+  ".form-choices-item.toggle-button input:checked + label": {
+      background: "var(--nc-bg-3)",
+  },
+  "[unselectable]": {
+    "-webkit-user-select": "none",
+    "-moz-user-select": "none",
+    "user-select": "none",
   }
 }
 
