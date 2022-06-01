@@ -36,7 +36,7 @@ export const mdSx: SxProps = {
     justifyContent: "space-between"
   },
   ".form-row :not(.form-field:last-child)": {
-    pr: 0.5
+    pr: 2
   },
   ".form-field": {
     display: "flex",
@@ -48,19 +48,22 @@ export const mdSx: SxProps = {
   },
   ".form-field span": {
     opacity: "80%",
-    fontSize: ".9rem",
+    fontSize: ".75rem",
     pb: 0.5
   },
-  ".form-radio": {
+  ".form-radio,.form-checkbox": {
     display: "flex",
     flexDirection: ["column", "row"],
     alignItems: "baseline"
   },
-  ".form-radio label": {
+  ".form-radio label, .form-checkbox label": {
     pl: 0.75,
   },
-  ".form-field > .form-radio :not(.form-radio-item:last-child)": {
+  ".form-field > .form-radio :not(.form-radio-item:last-child), .form-field > .form-checkbox :not(.form-checkbox-item:last-child)": {
     pr: 5
+  },
+  label: {
+    mt: 0.5
   }
 }
 

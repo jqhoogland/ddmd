@@ -1,7 +1,7 @@
 import { Avatar, Box, CardHeader, Container, Typography } from "@mui/material";
 import React from "react";
 import {mdSx, parseMDToHTML} from "../utils/md";
-import { data } from "../utils/mock";
+import { data } from "../utils/demo";
 
 const MD = ({ body }: { body: string }) => {
   const [bodyProcessed, setBodyProcessed] = React.useState<any>();

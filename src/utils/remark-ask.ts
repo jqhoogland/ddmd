@@ -39,6 +39,7 @@ type JSONSchemaTypeName = JSONSchema7TypeName | CustomJSONSchemaTypeName;
 interface JSONSchema extends Omit<JSONSchema7, "type"> {
     type: JSONSchemaTypeName,
     placeholder?: string
+    label?: string  // Only for boolean toggles
 }
 
 
@@ -59,17 +60,6 @@ const getRangeInput = (schema: JSONSchema): HastElements => {
       tagName: "input",
       properties: {
           // type: h()
-      },
-      children: []
-  }
-}
-
-const getDatetimeInput = (schema: JSONSchema): HastElements => {
-  return {
-      type: "element",
-      tagName: "input",
-      properties: {
-          type: "datetime-local"
       },
       children: []
   }
@@ -121,20 +111,14 @@ function isCheckbox (schema: JSONSchema): schema is CheckboxSchema {
     return !!schema?.items && schema.items !== true && "enum" in schema.items
 }
 
-const getListInput = (schema: CheckboxSchema | RadioSchema, items: Choice[], type: "radio" | "checkbox"): HastElements => {
-  return {
-      type: "element",
-      tagName: "div",
-      properties: {
-          className: ["form-field"]
-      },
-      children: [
+const getListInput = (schema: CheckboxSchema | RadioSchema, items: Choice[], type: "radio" | "checkbox"): HastElements => (
+    h(".form-field",
         h("label", {for: schema.$id}, schema.title),
         h("span", {id: `${schema.$id}-description`}, schema.description),
-        h("div.form-radio", items.map((choice: Choice) => {
+        h(`div.form-${type}`, items.map((choice: Choice) => {
             const id = `${schema.$id}-${choice?.id ?? choice.value}`
 
-            return h("div.form-radio-item",[
+            return h(`div.form-${type}-item`,[
                     h("input", {
                         type,
                         name: schema.$id,
@@ -146,33 +130,35 @@ const getListInput = (schema: CheckboxSchema | RadioSchema, items: Choice[], typ
             }
           )
         )
-      ]
-  }
-}
+    )
+)
 
 const getRadioInput = (schema: RadioSchema): HastElements => getListInput(schema, <Choice[]> schema.enum,"radio");
 const getCheckboxInput = (schema: CheckboxSchema): HastElements => getListInput(schema, <Choice[]> schema.items?.enum,"checkbox");
+const getToggleInput = (schema: JSONSchema): HastElements => (
+    h("div.form-field",
+        h("label", {for: schema.$id}, schema.title),
+        h("span", {id: `${schema.$id}-description`}, schema.description),
+        h("div.form-checkbox",
+            h("input", {type: "checkbox", name: schema.$id, id: schema.$id, value: true}),
+            h("label", {for: schema.$id}, schema?.label)
+        )
+    )
+)
 
-const getInputWithType = (schema: JSONSchema, type: HTMLInputTypeAttribute): HastElements => {
-    return {
-        type: "element",
-        tagName: "div",
-        properties: {
-          className: ["form-field"]
-        },
-        children: [
-            h("label", {"for": schema.$id}, schema.title),
-            h("span", {"id": `${schema.$id}-description`}, schema.description),
-            // @ts-ignore
-            h("input", {
-                type,
-                id: schema.$id,
-                ariaDescribedby: `${schema.$id}-description`,
-                placeholder: schema?.placeholder ?? ""
-            }, schema.default)
-        ]
-    }
-}
+const getInputWithType = (schema: JSONSchema, type: HTMLInputTypeAttribute): HastElements => (
+    h("div.form-field",
+        h("label", {"for": schema.$id}, schema.title),
+        h("span", {"id": `${schema.$id}-description`}, schema.description),
+        // @ts-ignore
+        h("input", {
+            type,
+            id: schema.$id,
+            ariaDescribedby: `${schema.$id}-description`,
+            placeholder: schema?.placeholder ?? ""
+        }, schema.default)
+    )
+)
 
 const getInput = (schema: JSONSchema): HastElements => {
     if (isRadio(schema)) {
@@ -184,19 +170,25 @@ const getInput = (schema: JSONSchema): HastElements => {
             return getInputWithType(schema, "text")
         case "quantity":
             return getQuantityInput(schema)
-        case "range":
-            return getRangeInput(schema)
         case "datetime":
-            return getDatetimeInput(schema)
-        case "date":
-            return getDateInput(schema)
+            return getInputWithType(schema, "datetime-local")
         case "duration":
             return getDurationInput(schema)
+        case "boolean":
+            return getToggleInput(schema)
         case "array":
             if (isCheckbox(schema)) {
                 return getCheckboxInput(schema as CheckboxSchema)
             }
     }
+    if (schema.type === "tel") {
+        schema.placeholder = schema.placeholder || "+# (###) ### ###"
+    } else if (schema.type === "email") {
+        schema.placeholder = schema.placeholder || "john@example.com"
+    } else if (schema.type === "url") {
+        schema.placeholder = schema.placeholder || "example.com"
+    }
+
     return getInputWithType(schema, schema.type)
 }
 
@@ -211,7 +203,7 @@ export const remarkAsk = () => {
         // @ts-ignore
         node.type = "HTML";
 
-        console.log(questions, inputs)
+        inputs.forEach(({children}) => console.log(children));
 
         node.data = {
             hName: "div",
