@@ -20,17 +20,19 @@
  * To have two inputs displayed next to each other, use `---` to separate yaml
  * pages.
  *
+ * TODO:
+ * - [] Add enum support (via datalist) for inputs other than radio/checkbox
+ *
  */
 import {Root, Element as HastElements} from "hast";
 import {visit} from "unist-util-visit";
-import {Code} from "mdast";
+import {Code, HTML} from "mdast";
 import {h} from "hastscript";
 // @ts-ignore
 import yaml from "js-yaml";
 import {JSONSchema7, JSONSchema7Type, JSONSchema7TypeName} from "json-schema";
 import {HTMLInputTypeAttribute} from "react";
-import {isBoolean} from "util";
-import {HChild} from "hastscript/lib/core";
+import {CURRENCIES} from "./constants";
 
 type CustomJSONSchemaTypeName = "quantity" | "range" | "datetime" | "date" | "time" | "duration" | "email" | "file" |
     "url" | "tel";
@@ -41,30 +43,45 @@ interface JSONSchema extends Omit<JSONSchema7, "type"> {
     type: JSONSchemaTypeName,
     placeholder?: string
 
-    // Boolean toggles
+    // type = "boolean"
     label?: string
 
-    // Ranges
+    // type = "range" | "number"
     min?: number
     max?: number
     step?: number
-    ticks?: boolean | number | (number | null)[]
+    ticks?: boolean | number | (number | null)[]  // TODO: Use enum instead
 
     // Radios & Checkboxes
     variant?: "dropdown" | "autocomplete" | "button"
+
+    // type = "quantity"
+    units?: string
 }
 
 
 const getQuantityInput = (schema: JSONSchema): HastElements => {
-  return {
-      type: "element",
-      tagName: "input",
-      properties: {
-          // type: h()
-      },
-      children: []
-  }
+    const units = schema.units ?? ""
+    const position = Object.values(CURRENCIES)
+        .indexOf(units) >= 0
+        ? "prefix" : "suffix";
+
+    return (
+        getField(schema as FieldData,
+            h(".quantity",
+                h(`.units.${position}`, units),
+                // @ts-ignore
+                h(`input.${position}ed`, {
+                    type: "number",
+                    id: schema.$id,
+                    ariaDescribedby: `${schema.$id}-description`,
+                    placeholder: schema?.placeholder ?? "",
+                }, schema.default)
+            )
+        )
+    );
 }
+
 
 const getDurationInput = (schema: JSONSchema): HastElements => {
   return {
@@ -296,6 +313,9 @@ const getInput = (schema: JSONSchema): HastElements => {
             return getToggleInput(schema);
         case "range":
             return getRangeInput(schema);
+        case "string":
+        case undefined:
+            return getTextInput(schema)
         case "array":
             if (isCheckbox(schema)) {
                 return getCheckboxInput(schema as CheckboxSchema);
@@ -309,10 +329,14 @@ const getInput = (schema: JSONSchema): HastElements => {
         schema.placeholder = schema.placeholder || "example.com";
     }
 
-    return getTextInput(schema);
+    return getInputWithType(schema, schema.type);
 }
 
-export const remarkAsk = () => {
+interface RemarkAskOptions {
+    extensions?: any[]  // TODO: Separate custom inputs & load them in
+}
+
+export const remarkAsk = (options?: RemarkAskOptions) => {
   return (tree: Root) => {
     // @ts-ignore
     visit(tree, { lang: "question" }, (node: Code) => {
@@ -322,9 +346,6 @@ export const remarkAsk = () => {
 
         // @ts-ignore
         node.type = "HTML";
-
-        inputs.forEach(({children}) => console.log(children));
-
         node.data = {
             hName: "div",
             hProperties: {

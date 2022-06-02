@@ -35,7 +35,7 @@ export const mdSx: SxProps = {
     flexDirection: ["column", "row"],
     justifyContent: "space-between"
   },
-  ".form-row :not(.form-field:last-child)": {
+  ".form-row :not(.form-field:last-child):not(.toggle-button label):not(.quantity input)": {
     pr: 2
   },
   ".form-field": {
@@ -59,7 +59,7 @@ export const mdSx: SxProps = {
   ".form-choices label": {
     pl: 0.75,
   },
-  ".form-field > .form-choices.radio :not(.form-choices-item:last-child)": {
+  ".form-field > .form-choices.radio:not(.toggle-button) :not(.form-choices-item:last-child)": {
     pr: 5
   },
   label: {
@@ -68,17 +68,25 @@ export const mdSx: SxProps = {
   ".form-dropdown select, .form-autocomplete input": {
     width: "100%"
   },
+  ".toggle-button": {
+      mr: 3,
+  },
   ".toggle-button label": {
     borderRadius: "4px",
     width: "100%",
-    pr: 1
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    py: 0.5,
+    px: 2,
+    textTransform: "uppercase",
+    color: "var(--nc-ac-tx)"
   },
   ".form-choices-item.toggle-button input": {
     display: "none",
   },
   ".form-choices-item.toggle-button label": {
       border: "1px solid #888",
-      padding: "5px 10px",
       background: "var(--nc-bg-2)"
   },
   ".form-choices-item.toggle-button label:hover": {
@@ -94,14 +102,37 @@ export const mdSx: SxProps = {
     "-webkit-user-select": "none",
     "-moz-user-select": "none",
     "user-select": "none",
+  },
+  ".quantity": {
+    position: "relative"
+  },
+  ".quantity input.prefixed": {
+    pl: "1.5rem"
+  },
+  ".quantity input.suffixed": {
+    pr: "1.5rem"
+  },
+  ".quantity .units": {
+    position: "absolute",
+    top: "0.375rem",
+    opacity: 0.8,
+    color: "var(--nc-ac-tx)",
+    fontSize: "0.8rem"
+  },
+  ".quantity .units.prefix": {
+    left: "0.5rem"
+  },
+  ".quantity .units.suffix": {
+    right: "0.5rem"
   }
+
 }
 
 export const createProcessor = (): Processor =>
     unified()
         .use(remarkParse, {})
         .use(remarkCallout)
-        .use(remarkAsk)
+        .use(remarkAsk, {})
         .use(remarkRehype, {
           allowDangerousHtml: true,  // FIXME: DANGEROUS!
           passThrough: []

@@ -34,9 +34,16 @@ description: Type a number
 type: number
 ---
 $id: quantity
+title: "💰️ Currency"
+description: Enter an amount (USD)
+type: quantity
+units: $
+---
+$id: quantity
 title: "⚖️ Quantity"
 description: Type a quantity (with units)
 type: quantity
+units: m
 
 \`\`\`
 
