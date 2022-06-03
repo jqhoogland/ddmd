@@ -9,17 +9,17 @@ This is a body.
 #### Text
 
 \`\`\`question
-$id: text
+$id: q_text
 title: 📕 Text (short)
 description: Go ahead, write something...
-type: text
+type: string
 \`\`\`  
 
 \`\`\`question
-$id: textarea
+$id: q_textarea
 title: 📚 Text (long)
 description: Go ahead, write something longer...
-type: text
+type: string
 rows: 5
 \`\`\`  
 
@@ -28,18 +28,18 @@ rows: 5
 #### Numbers
 
 \`\`\`question
-$id: number
+$id: q_number
 title: "💯 Number"
 description: Type a number
 type: number
 ---
-$id: quantity
+$id: q_currency
 title: "💰️ Currency"
 description: Enter an amount (USD)
 type: quantity
 units: $
 ---
-$id: quantity
+$id: q_quantity
 title: "⚖️ Quantity"
 description: Type a quantity (with units)
 type: quantity
@@ -49,7 +49,7 @@ units: m
 
 
 \`\`\`question
-$id: range
+$id: q_range
 title: "⭕️ Range"
 description: Choose a number out of a range.
 type: range
@@ -59,7 +59,7 @@ step: 1
 ticks: true
 
 ---
-$id: range_2
+$id: q_range_2
 title: "⭕️ Range 2"
 description: Choose a number out of a range.
 type: range
@@ -78,7 +78,7 @@ ticks: [😭, null, 😞, null, 😑, null, 😊, null, 😁]
 #### Choices
 
 \`\`\`question
-$id: radio
+$id: q_radio
 title: 🔘 Radio
 description: Select one option (and only one!).
 enum: 
@@ -89,7 +89,7 @@ enum:
 - title: Another choice
   value: 3
 ---
-$id: checkbox
+$id: q_checkbox
 title: ☑️ Checkbox
 description: Select as many options as you like.
 type: array
@@ -107,7 +107,7 @@ items:
 ---
 
 \`\`\`question
-$id: radio
+$id: q_dropdown_one
 title: 🔘 Dropdown (single)
 description: Select one option (and only one!).
 enum: 
@@ -124,7 +124,7 @@ enum:
 
 variant: dropdown  
 ---
-$id: checkbox
+$id: q_dropdown_multiple
 title: ☑️ Dropdown (multiple)
 description: Select as many options as you like.
 type: array
@@ -144,7 +144,7 @@ variant: dropdown
 ---
 
 \`\`\`question
-$id: radio
+$id: q_autocomplete
 title: 🔘 Autocomplete (single)
 description: Select one option (and only one!).
 enum: 
@@ -156,14 +156,13 @@ enum:
   value: 3
 
 variant: autocomplete  
-
 \`\`\`  
 
 
 ---
 
 \`\`\`question
-$id: button
+$id: q_button
 title: 🔲 Button
 description: Push to toggle.
 type: boolean
@@ -172,7 +171,7 @@ variant: button
 
 ---
 
-$id: radio-buttons
+$id: q_radio_buttons
 title: 🔘 Toggle Buttons
 description: Select an option
 enum: 
@@ -191,17 +190,17 @@ variant: button
 #### Contact
 
 \`\`\`question
-$id: telephone
+$id: q_telephone
 title: 📞 Telephone
 description: How can we reach you?
 type: tel
 ---
-$id: email
+$id: q_email
 title: ✉️ Email
 description: How can we reach you?
 type: email
 ---
-$id: url
+$id: q_url
 title: 🔗 URL
 description: Share a url.
 type: url
@@ -213,12 +212,12 @@ type: url
 
 
 \`\`\`question
-$id: date
+$id: q_date
 title: 📆 Date
 description: What date is it today?
 type: date
 ---
-$id: time
+$id: q_time
 title: ⏰ Time
 description: What time is it right now?
 type: time
@@ -226,23 +225,17 @@ type: time
 
 
 \`\`\`question
-$id: date
+$id: q_date
 title: ⏳ Datetime
 description: What date and time is it right now?
 type: datetime
----
-$id: duration
-title: ⌛️ Duration
-description: How much time has passed?
-type: duration
-
 
 \`\`\`  
 
 ---
 
 \`\`\`question
-$id: file
+$id: q_file
 title: 📁 File
 description: Upload a file.
 type: file

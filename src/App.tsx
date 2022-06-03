@@ -1,13 +1,11 @@
 import React from 'react';
-import { Container } from "@mui/material";
 import Notionish from "./components/Notionish";
+import "./App.css";
 
 function App() {
   return (
     <>
-      <Container>
-        <Notionish/>
-      </Container>
+      <Notionish/>
     </>
   );
 }

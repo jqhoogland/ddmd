@@ -1,0 +1,169 @@
+html > body {
+    width: auto;
+    margin: 0 0 0 0;
+    max-width: none;
+    padding: 0 0 0 0;
+    zoom: 125%;
+    --nc-bg-2: #f5f2f0;
+    --nc-bg-3: #e5e2e0;
+    --nc-ac-1: #EC5656;
+    --nc-ac-tx: #0C4047;
+    --nc-lk-1: #71a7e2;
+    --nc-lk-2: #376ba9;
+    --nc-font-sans: Inter,-apple-system,BlinkMacSystemFont,Segoe UI,
+    Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif,
+    "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+}
+
+input:focus {
+    outline-color: var(--nc-lk-1);
+}
+
+
+code, pre, .callout {
+    background: var(--nc-bg-2);
+    border-radius: 0.5em;
+    margin: 0.5em 0;
+}
+
+code {
+    color: var(--nc-ac-1)
+}
+
+pre code {
+    color: black;
+    overflow-x: scroll
+}
+
+.callout {
+    font-family: var(--nc-font-sans);
+    display: flex;
+    flex-direction: row;
+    white-space:  pre-wrap;
+    align-items: baseline;
+    padding: 0 1.5em;
+}
+
+.callout h3 {
+    margin-right: 0.5em;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: [column, row ];  /* TODO */
+    justify-content: space-between
+}
+
+.form-row :not(.form-field:last-child):not(.toggle-button label):not(.quantity input) {
+     padding-right: 1.25rem;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    width: 100%
+}
+
+.form-field label {
+    font-weight: 600
+}
+
+.form-field span {
+    opacity: 80%;
+    font-size: .75rem;
+    padding-bottom: 0.5rem;
+}
+
+.form-choices {
+    display: flex;
+    flex-direction: [column, row ];  /* TODO */
+    align-items: baseline
+}
+
+.form-choices label {
+     padding-left: 0.75rem;
+}
+
+.form-field > .form-choices.radio:not(.toggle-button) :not(.form-choices-item:last-child) {
+     padding-right: 5rem;
+}
+
+label {
+    margin-top: 0.5rem;
+}
+
+.form-dropdown select, .form-autocomplete input {
+    width: 100%
+}
+
+.toggle-button {
+    margin-right: 3rem;
+}
+
+.toggle-button label {
+    border-radius: 4px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 0.25rem 1.5rem;
+    text-transform: uppercase;
+    color: var(--nc-ac-tx);
+    white-space: nowrap;
+}
+
+.form-choices-item.toggle-button input {
+    display: none;
+}
+
+.form-choices-item.toggle-button label {
+    border: 1px solid var(--nc-bg-3);
+    background: var(--nc-bg-2)
+}
+
+.form-choices-item.toggle-button label:hover {
+    background: var(--nc-bg-3);
+}
+
+.form-choices-item.toggle-button label:active,
+.form-choices-item.toggle-button input:focus + label {
+    background: var(--nc-bg-3);
+}
+
+.form-choices-item.toggle-button input:checked + label {
+    background: var(--nc-bg-3);
+}
+
+[unselectable] {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.quantity {
+    position: relative
+}
+
+.quantity input.prefixed {
+     padding-left: 1.5rem
+}
+
+.quantity input.suffixed {
+     padding-right: 1.5rem
+}
+
+.quantity .units {
+    position: absolute;
+    top: 0.375rem;
+    opacity: 0.8;
+    color: var(--nc-ac-tx);
+    font-size: 0.8rem
+}
+
+.quantity .units.prefix {
+    left: 0.5rem
+}
+
+.quantity .units.suffix {
+    right: 0.5rem
+}

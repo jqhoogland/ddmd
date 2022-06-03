@@ -30,16 +30,17 @@ import {Code, HTML} from "mdast";
 import {h} from "hastscript";
 // @ts-ignore
 import yaml from "js-yaml";
-import {JSONSchema7, JSONSchema7Type, JSONSchema7TypeName} from "json-schema";
+import {JSONSchema7, JSONSchema7Definition, JSONSchema7Type, JSONSchema7TypeName} from "json-schema";
 import {HTMLInputTypeAttribute} from "react";
 import {CURRENCIES} from "./constants";
 
-type CustomJSONSchemaTypeName = "quantity" | "range" | "datetime" | "date" | "time" | "duration" | "email" | "file" |
+export type CustomJSONSchemaTypeName = "quantity" | "range" | "datetime" | "date" | "time" | "email" | "file" |
     "url" | "tel";
 
-type JSONSchemaTypeName = JSONSchema7TypeName | CustomJSONSchemaTypeName;
+export type JSONSchemaTypeName = JSONSchema7TypeName | CustomJSONSchemaTypeName;
 
-interface JSONSchema extends Omit<JSONSchema7, "type"> {
+export interface JSONSchema extends Omit<JSONSchema7, "type" | "$id"> {
+    $id: string,
     type: JSONSchemaTypeName,
     placeholder?: string
 
@@ -59,6 +60,13 @@ interface JSONSchema extends Omit<JSONSchema7, "type"> {
     units?: string
 }
 
+export interface ObjectSchema extends Omit<JSONSchema, "type" | "properties"> {
+    type: "object",
+    properties: {
+        [key: string]: JSONSchema;
+    };
+}
+
 
 const getQuantityInput = (schema: JSONSchema): HastElements => {
     const units = schema.units ?? ""
@@ -67,7 +75,7 @@ const getQuantityInput = (schema: JSONSchema): HastElements => {
         ? "prefix" : "suffix";
 
     return (
-        getField(schema as FieldData,
+        getField(schema,
             h(".quantity",
                 h(`.units.${position}`, units),
                 // @ts-ignore
@@ -80,18 +88,6 @@ const getQuantityInput = (schema: JSONSchema): HastElements => {
             )
         )
     );
-}
-
-
-const getDurationInput = (schema: JSONSchema): HastElements => {
-  return {
-      type: "element",
-      tagName: "input",
-      properties: {
-          // type: h()
-      },
-      children: []
-  }
 }
 
 interface Choice {
@@ -123,8 +119,8 @@ function isCheckbox (schema: JSONSchema): schema is CheckboxSchema {
 
 interface FieldData {
     $id: string;
-    title: string;
-    description: string;
+    title?: string;
+    description?: string;
 }
 
 const getField = (data: FieldData, ...rest: any[]): HastElements => (
@@ -161,7 +157,7 @@ const getRangeInput = (schema: JSONSchema): HastElements => {
     }
 
     return (
-        getField(schema as FieldData,
+        getField(schema,
             // @ts-ignore
             h("input", {
                 type: "range",
@@ -183,7 +179,7 @@ const getListInput = (schema: CheckboxSchema | RadioSchema, items: Choice[], typ
     const isButton = schema.variant === "button";
     const variant = isButton ? ".toggle-button" : "default"
     return (
-        getField(schema as FieldData,
+        getField(schema,
             h(`.form-choices.${type}${variant}`, items.map((choice: Choice) => {
                     const id = `${schema.$id}-${choice?.id ?? choice.value}`
 
@@ -216,7 +212,7 @@ const getOptions = (items: Choice[]): HastElements[] => items.map(item => {
 const getDropdownInput = (schema: CheckboxSchema | RadioSchema, items: Choice[], type: "radio" | "checkbox"): HastElements => {
     const options = getOptions(items)
     return (
-        getField(schema as FieldData,
+        getField(schema,
             h(`select.form-dropdown`, {
                 id: `${schema.$id}-select`,
                 name: schema.$id,
@@ -232,7 +228,7 @@ const getDropdownInput = (schema: CheckboxSchema | RadioSchema, items: Choice[],
 const getAutocompleteInput = (schema: CheckboxSchema | RadioSchema, items: Choice[]): HastElements => {
     const options = getOptions(items)
     return (
-        getField(schema as FieldData,
+        getField(schema,
             h(`.form-autocomplete`,
                 h(`input`, {
                     id: `${schema.$id}-autocomplete`,
@@ -267,7 +263,7 @@ const getToggleInput = (schema: JSONSchema): HastElements => (
 )
 
 const getInputWithType = (schema: JSONSchema, type: HTMLInputTypeAttribute): HastElements => (
-    getField(schema as FieldData,
+    getField(schema,
         // @ts-ignore
         h("input", {
             type,
@@ -284,9 +280,10 @@ interface TextSchema extends JSONSchema {
 
 const getTextInput = (schema: TextSchema): HastElements => {
     if ("rows" in schema) {
-        return getField(schema as FieldData,
+        return getField(schema,
             // @ts-ignore
             h("textarea", {
+                id: schema.$id,
                 name: schema.$id,
                 ariaDescribedby: `${schema.$id}-description`,
                 placeholder: schema?.placeholder ?? "",
@@ -297,51 +294,74 @@ const getTextInput = (schema: TextSchema): HastElements => {
     return getInputWithType(schema, "text")
 }
 
-const getInput = (schema: JSONSchema): HastElements => {
+export const getInputType = (schema: JSONSchema): string | undefined => {
     if (isRadio(schema)) {
-        return getRadioInput(schema as RadioSchema);
+        return "radio";
+    } else if (schema.type === "array" && isCheckbox(schema)) {
+        return "checkbox";
     }
 
-    switch (schema.type) {
+    return schema?.type;
+}
+
+const getTelInput = (schema: JSONSchema): HastElements => {
+    schema.placeholder = schema.placeholder || "+# (###) ### ###";
+    return getInputWithType(schema, "tel");
+}
+
+
+const getEmailInput= (schema: JSONSchema): HastElements => {
+    schema.placeholder = schema.placeholder || "john@example.com";
+    return getInputWithType(schema, "email");
+}
+
+const getURLInput= (schema: JSONSchema): HastElements => {
+    schema.placeholder = schema.placeholder || "example.com";
+    return getInputWithType(schema, "url")
+}
+
+const getInput = (schema: JSONSchema): HastElements => {
+    switch (getInputType(schema)) {
+        case "radio":
+            return getRadioInput(schema as RadioSchema);
+        case "checkbox":
+            return getCheckboxInput(schema as CheckboxSchema);
         case "quantity":
             return getQuantityInput(schema);
-        case "duration":
-            return getDurationInput(schema);
         case "datetime":
             return getInputWithType(schema, "datetime-local");
         case "boolean":
             return getToggleInput(schema);
         case "range":
             return getRangeInput(schema);
+        case "tel":
+            return getTelInput(schema);
+        case "email":
+            return getEmailInput(schema);
+        case "url":
+            return getURLInput(schema);
         case "string":
         case undefined:
             return getTextInput(schema)
-        case "array":
-            if (isCheckbox(schema)) {
-                return getCheckboxInput(schema as CheckboxSchema);
-            }
     }
-    if (schema.type === "tel") {
-        schema.placeholder = schema.placeholder || "+# (###) ### ###";
-    } else if (schema.type === "email") {
-        schema.placeholder = schema.placeholder || "john@example.com";
-    } else if (schema.type === "url") {
-        schema.placeholder = schema.placeholder || "example.com";
-    }
-
     return getInputWithType(schema, schema.type);
 }
 
-interface RemarkAskOptions {
+export interface RemarkAskOptions {
     extensions?: any[]  // TODO: Separate custom inputs & load them in
+    questionParser?: (s: string) => JSONSchema[],
+    data?: Record<string, any>
 }
 
 export const remarkAsk = (options?: RemarkAskOptions) => {
+    // TODO Make this an optional dependency (default to JSON)
+    const parser = options?.questionParser ?? yaml.loadAll;
+
   return (tree: Root) => {
     // @ts-ignore
     visit(tree, { lang: "question" }, (node: Code) => {
         // @ts-ignore
-        const questions: JSONSchema[] = yaml.loadAll(node.value);
+        const questions: JSONSchema[] = parser(node.value);
         const inputs = questions.map(getInput);
 
         // @ts-ignore
@@ -350,8 +370,9 @@ export const remarkAsk = (options?: RemarkAskOptions) => {
             hName: "div",
             hProperties: {
                 className: ["form-row"],
+                schema: questions
             },
-            hChildren: inputs
+            hChildren: inputs,
         }
     });
   };
