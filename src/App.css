@@ -1,9 +1,8 @@
 html > body {
-    width: auto;
+    width: 100vw;
     margin: 0 0 0 0;
     max-width: none;
     padding: 0 0 0 0;
-    zoom: 125%;
     --nc-bg-2: #f5f2f0;
     --nc-bg-3: #e5e2e0;
     --nc-ac-1: #EC5656;
@@ -54,7 +53,7 @@ pre code {
     justify-content: space-between
 }
 
-.form-row :not(.form-field:last-child):not(.toggle-button label):not(.quantity input) {
+.form-row > :not(.form-field:last-child):not(.toggle-button label):not(.quantity input) {
      padding-right: 1.25rem;
 }
 
@@ -157,13 +156,38 @@ label {
     top: 0.375rem;
     opacity: 0.8;
     color: var(--nc-ac-tx);
-    font-size: 0.8rem
+    font-size: 0.8rem;
 }
 
 .quantity .units.prefix {
-    left: 0.5rem
+    left: 0.5rem;
 }
 
 .quantity .units.suffix {
-    right: 0.5rem
+    right: 0.5rem;
+}
+
+.likert-table {
+    margin-top: 1rem;
+}
+
+.likert-col-title, .likert-col {
+    text-align: center;
+    vertical-align: middle;
+    padding-right: 0.5rem;
+}
+
+.likert-top-left {
+    background: none;
+    border-top: none;
+    border-left: none;
+}
+
+.likert-row-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.likert-col {
+    min-width: 3rem
 }

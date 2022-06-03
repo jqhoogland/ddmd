@@ -24,15 +24,28 @@
  * - [] Add enum support (via datalist) for inputs other than radio/checkbox
  *
  */
-import {Root, Element as HastElements} from "hast";
+import {Element as HastElements, Root} from "hast";
 import {visit} from "unist-util-visit";
-import {Code, HTML} from "mdast";
-import {h} from "hastscript";
+import {Code} from "mdast";
 // @ts-ignore
 import yaml from "js-yaml";
-import {JSONSchema7, JSONSchema7Definition, JSONSchema7Type, JSONSchema7TypeName} from "json-schema";
-import {HTMLInputTypeAttribute} from "react";
-import {CURRENCIES} from "./constants";
+import {JSONSchema7, JSONSchema7TypeName} from "json-schema";
+import {getQuantityInput, getRangeInput} from "./numeric";
+import {getInputWithType} from "./utils";
+import {
+    CheckboxSchema,
+    getCheckboxInput,
+    getLikertInput,
+    getRadioInput,
+    getToggleInput,
+    isCheckbox,
+    isLikert,
+    isRadio,
+    LikertSchema,
+    RadioSchema
+} from "./choice";
+import {getEmailInput, getTelInput, getURLInput} from "./contact";
+import {getTextInput} from "./text";
 
 export type CustomJSONSchemaTypeName = "quantity" | "range" | "datetime" | "date" | "time" | "email" | "file" |
     "url" | "tel";
@@ -60,265 +73,33 @@ export interface JSONSchema extends Omit<JSONSchema7, "type" | "$id"> {
     units?: string
 }
 
-export interface ObjectSchema extends Omit<JSONSchema, "type" | "properties"> {
-    type: "object",
-    properties: {
-        [key: string]: JSONSchema;
-    };
-}
+export type InputType = JSONSchemaTypeName | "radio" | "checkbox" | "likert" | undefined;
 
 
-const getQuantityInput = (schema: JSONSchema): HastElements => {
-    const units = schema.units ?? ""
-    const position = Object.values(CURRENCIES)
-        .indexOf(units) >= 0
-        ? "prefix" : "suffix";
 
-    return (
-        getField(schema,
-            h(".quantity",
-                h(`.units.${position}`, units),
-                // @ts-ignore
-                h(`input.${position}ed`, {
-                    type: "number",
-                    id: schema.$id,
-                    ariaDescribedby: `${schema.$id}-description`,
-                    placeholder: schema?.placeholder ?? "",
-                }, schema.default)
-            )
-        )
-    );
-}
-
-interface Choice {
-    name?: string;
-    id?: string;
-    value?: any;
-    label?: string
-
-    // For group heading
-    enum?: string
-}
-
-
-interface RadioSchema extends Omit<JSONSchema, "enum"> {
-    enum: JSONSchema7Type[]
-}
-
-function isRadio (schema: JSONSchema): schema is RadioSchema {
-    return "enum" in schema;
-}
-
-interface CheckboxSchema extends Omit<JSONSchema, "items"> {
-    items: JSONSchema7
-}
-
-function isCheckbox (schema: JSONSchema): schema is CheckboxSchema {
-    return !!schema?.items && schema.items !== true && "enum" in schema.items
-}
-
-interface FieldData {
-    $id: string;
-    title?: string;
-    description?: string;
-}
-
-const getField = (data: FieldData, ...rest: any[]): HastElements => (
-     h(".form-field",
-        h("label", {for: data.$id}, data.title),
-        h("span", {id: `${data.$id}-description`}, data.description),
-         ...rest
-     )
-)
-
-const range = (min: number, max: number, step: number = 1): number[] =>
-  Array.from({ length: Math.floor((max-min) / step) }, (_, i) => min + i * step)
-
-
-const getTicks = (ticks: true | (number | null)[], {max, min, step}: {max: number, min: number, step: number}): { value: number | string, label?: number }[] => {
-    if (ticks === true) {
-        return range(min, max, step).map((step) => ({value: step}));
-    } else {
-        // @ts-ignore
-        return getTicks(true, {max, min, step})
-            .map(({value}, i) => ({value, ...(ticks[i] ? {label: ticks[i]} : {})}));
-    }
-}
-
-const getRangeInput = (schema: JSONSchema): HastElements => {
-    let datalist = h("");
-
-    if ("ticks" in schema && schema.ticks) {
-        // @ts-ignore
-        const ticks = getTicks(schema.ticks, schema);
-        datalist = h(`datalist#${schema.$id}-tickmarks`,
-            ticks.map(({value, label}) => h("option", {value, label}))
-        )
-    }
-
-    return (
-        getField(schema,
-            // @ts-ignore
-            h("input", {
-                type: "range",
-                id: schema.$id,
-                ariaDescribedby: `${schema.$id}-description`,
-                placeholder: schema?.placeholder ?? "",
-                min: schema?.min,
-                max: schema?.max,
-                step: schema?.step,
-                list:`${schema.$id}-tickmarks`
-            }, schema.default),
-            datalist
-        )
-    )
-}
-
-
-const getListInput = (schema: CheckboxSchema | RadioSchema, items: Choice[], type: "radio" | "checkbox"): HastElements => {
-    const isButton = schema.variant === "button";
-    const variant = isButton ? ".toggle-button" : "default"
-    return (
-        getField(schema,
-            h(`.form-choices.${type}${variant}`, items.map((choice: Choice) => {
-                    const id = `${schema.$id}-${choice?.id ?? choice.value}`
-
-                    return h(`.form-choices-item.${type}${variant}`,[
-                        h("input", {
-                            type,
-                            name: schema.$id,
-                            id,
-                            value: choice.value,
-                        }),
-                        h("label", {for: id, unselectable: isButton}, choice?.label ?? choice.value)
-                    ])
-                }
-                )
-            )
-        )
-    )
-}
-
-const getOptions = (items: Choice[]): HastElements[] => items.map(item => {
-        if ("enum" in item) {
-            // @ts-ignore
-            return h("optgroup", {label: item.label}, getOptions(item.enum));
-        }
-        // @ts-ignore
-        return h("option", {value: item.value}, item.title)
-    })
-
-
-const getDropdownInput = (schema: CheckboxSchema | RadioSchema, items: Choice[], type: "radio" | "checkbox"): HastElements => {
-    const options = getOptions(items)
-    return (
-        getField(schema,
-            h(`select.form-dropdown`, {
-                id: `${schema.$id}-select`,
-                name: schema.$id,
-                multiple: type === "checkbox",
-                size: schema?.minItems
-            },
-                ...options
-            )
-        )
-    )
-}
-
-const getAutocompleteInput = (schema: CheckboxSchema | RadioSchema, items: Choice[]): HastElements => {
-    const options = getOptions(items)
-    return (
-        getField(schema,
-            h(`.form-autocomplete`,
-                h(`input`, {
-                    id: `${schema.$id}-autocomplete`,
-                    name: schema.$id,
-                    type: "autocomplete",
-                    list: `${schema.$id}-autocomplete-options`
-                }),
-                h("datalist", {id: `${schema.$id}-autocomplete-options`},
-                    ...options)
-            )
-        )
-    )
-}
-
-const getRadioInput = (schema: RadioSchema): HastElements => {
-    if (schema.variant === "dropdown") {
-        return getDropdownInput(schema, <Choice[]> schema.enum,"radio");
-    } else if (schema.variant === "autocomplete") {
-        // @ts-ignore
-        return getAutocompleteInput(schema, schema.enum);
-    }
-    return getListInput(schema, <Choice[]> schema.enum,"radio");
-}
-const getCheckboxInput = (schema: CheckboxSchema): HastElements => {
-    if (schema.variant === "dropdown") {
-        return getDropdownInput(schema, <Choice[]> schema.items?.enum,"checkbox");
-    }
-    return getListInput(schema, <Choice[]> schema.items?.enum,"checkbox");
-}
-const getToggleInput = (schema: JSONSchema): HastElements => (
-    getListInput(schema as CheckboxSchema, [{value: true, label: schema?.label}], "checkbox")
-)
-
-const getInputWithType = (schema: JSONSchema, type: HTMLInputTypeAttribute): HastElements => (
-    getField(schema,
-        // @ts-ignore
-        h("input", {
-            type,
-            id: schema.$id,
-            ariaDescribedby: `${schema.$id}-description`,
-            placeholder: schema?.placeholder ?? ""
-        }, schema.default)
-    )
-)
-
-interface TextSchema extends JSONSchema {
-    rows?: number
-}
-
-const getTextInput = (schema: TextSchema): HastElements => {
-    if ("rows" in schema) {
-        return getField(schema,
-            // @ts-ignore
-            h("textarea", {
-                id: schema.$id,
-                name: schema.$id,
-                ariaDescribedby: `${schema.$id}-description`,
-                placeholder: schema?.placeholder ?? "",
-                rows: schema.rows
-            }, schema.default)
-        )
-    }
-    return getInputWithType(schema, "text")
-}
-
-export const getInputType = (schema: JSONSchema): string | undefined => {
+/**
+ * Ok so the naming here is confusing.
+ * `schema` has a `type` property that corresponds to a basic JSON type or one of our custom types above.
+ * However, this is not the same as the "input type". For example, if we want to ask a user to submit
+ * an answer out of a selection of options we can use a radio, a dropdown, or autocomplete.
+ *
+ * This returns the correct input type for a given (extended) JSON schema. It looks at both `schema.type`
+ * and other fields.
+ *
+ * @param schema
+ */
+export const getInputType = (schema: JSONSchema): InputType => {
     if (isRadio(schema)) {
         return "radio";
-    } else if (schema.type === "array" && isCheckbox(schema)) {
+    } else if (isCheckbox(schema)) {
         return "checkbox";
+    } else if (isLikert(schema)) {
+        return "likert"
     }
 
     return schema?.type;
 }
 
-const getTelInput = (schema: JSONSchema): HastElements => {
-    schema.placeholder = schema.placeholder || "+# (###) ### ###";
-    return getInputWithType(schema, "tel");
-}
-
-
-const getEmailInput= (schema: JSONSchema): HastElements => {
-    schema.placeholder = schema.placeholder || "john@example.com";
-    return getInputWithType(schema, "email");
-}
-
-const getURLInput= (schema: JSONSchema): HastElements => {
-    schema.placeholder = schema.placeholder || "example.com";
-    return getInputWithType(schema, "url")
-}
 
 const getInput = (schema: JSONSchema): HastElements => {
     switch (getInputType(schema)) {
@@ -340,6 +121,8 @@ const getInput = (schema: JSONSchema): HastElements => {
             return getEmailInput(schema);
         case "url":
             return getURLInput(schema);
+        case "likert":
+            return getLikertInput(schema as LikertSchema);
         case "string":
         case undefined:
             return getTextInput(schema)

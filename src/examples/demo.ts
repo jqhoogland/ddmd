@@ -279,5 +279,6 @@ export const data = {
   id: "123",
   title: "Some title",
   icon: "🦀",
+  banner: "https://www.arrowsrestaurant.com/wp-content/uploads/2020/06/healthy.jpg",
   body: BODY
 }

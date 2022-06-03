@@ -1,8 +1,9 @@
 import {Avatar, Box, CardHeader, Container, Divider, Typography} from "@mui/material";
-import React, {FormEvent, SyntheticEvent} from "react";
+import React, {ChangeEvent, FormEvent, SyntheticEvent} from "react";
 import {processMDToHTML, processSchema} from "../utils/md";
-import { data } from "../utils/demo";
-import {getInputType, JSONSchema, ObjectSchema} from "../utils/remark-ask/core";
+import { data } from "../examples/likert-demo";
+import {getInputType, InputType, JSONSchema} from "../utils/remark-ask/core";
+import {enumToChoice, isLikert, LikertAnswer, LikertSchema, ObjectSchema} from "../utils/remark-ask/choice";
 
 
 /**
@@ -56,19 +57,35 @@ function useSchema(body: string): ObjectSchema {
     return schema;
 }
 
-function getValue(path: string[], prevValue: any, value: any, schema: JSONSchema): any {
-    const optionEquals = (opt: any): boolean => (opt?.value ?? "").toString() === path?.[1];
+type Value<T> = {
+    string: T
+    [key: string]: any
+};
 
-    switch (getInputType(schema)) {
+interface BaseUpdateOptions {
+    id: string;
+    name: string;
+    value: any;
+    checked?: boolean;
+}
+
+interface UpdateValueOptions extends BaseUpdateOptions {
+    schema: JSONSchema,
+    type: InputType
+}
+
+function getValue(prevValue: Value<any>, {id, name, value, checked, type, schema}: UpdateValueOptions): any {
+
+    const optionEquals = (opt: any): boolean => (opt?.value ?? "").toString() === name;
+
+    switch (type) {
         case "radio":
             // @ts-ignore
             return schema.enum.find(optionEquals);
         case "checkbox":
-            // TODO: Check / Unchecked
-            if (!value) {
+            if (!checked) {
                 return prevValue.value.filter((opt: any) => !optionEquals(opt));
             }
-
             // @ts-ignore
             return [
               ...(prevValue?.value ?? []),
@@ -79,69 +96,101 @@ function getValue(path: string[], prevValue: any, value: any, schema: JSONSchema
             return {value: parseFloat(value)};
         case "quantity":
             return {value: parseFloat(value), units: schema.units};
-        case "datetime":
-        case "boolean":
-        case "range":
-        case "tel":
-        case "email":
-        case "url":
-        case "string":
-        case undefined:
-        case "array":
-            return {value};
     }
     return {value};
 }
 
 
-const update = (obj: Record<string, any> = {}, path: string[] = [], value: any = null, schema: ObjectSchema): Record<string, any> => {
-    const name = path[0];
-    const rest = path.slice(1, path.length);
+interface UpdateLikertOptions extends BaseUpdateOptions {
+    questionIdx: number;
+    answerValue: string;
+    schema: LikertSchema;
+}
 
-    if (!(name in schema.properties)) {
-        return {value}
-    }
+const updateLikert = (obj: Record<string, any>, {id, questionIdx, answerValue, schema, name}: UpdateLikertOptions): Record<string, any> => {
+    const defaultAnswers = schema.items.map(
+            ({$id, title, description}) =>
+                ({$id, title, description, value: null}));
+    const prevAnswers = obj[id] ?? defaultAnswers;
 
-    const prevValue = obj[name];
+    const choice = enumToChoice(
+        // @ts-ignore
+        schema.$defs.choices.enum
+            .find((item: { const: any }) => item.const.toString() === answerValue)
+    );
+    const answer: LikertAnswer = {...prevAnswers[questionIdx], value: choice};
 
-    console.log({name, rest, obj, value, subschema: schema.properties[name], prevValue});
-
-    if (rest.length === 0) {
-        return {...obj, [name]: getValue(path, prevValue, value, schema.properties[name])}
-    }
+    console.log({id, questionIdx, answerValue, schema, name, answer, choice, prevAnswers})
 
     return {
         ...obj,
-        [name]: update(
-            prevValue,
-            rest,
-            getValue(path, prevValue, value, schema.properties[name]),
-            schema
-        )
+        [id]: prevAnswers.map((prev: LikertAnswer) => (prev.$id === answer.$id ? answer : prev)),
+        [name]: answer
     }
+}
+
+interface UpdateOptions extends BaseUpdateOptions {
+    schema: ObjectSchema;
+}
+
+const updateNested = (obj: Record<string, any>, {id, schema, ...options}: UpdateOptions): Record<string, any> => {
+    const [rootID, ...rest] = id.split("-");
+    const fieldSchema = schema.properties?.[rootID];
+
+    if (fieldSchema && isLikert(fieldSchema)) {
+        console.log({id, rootID, rest})
+        return updateLikert(obj, {
+            questionIdx: parseInt(rest[0]),
+            answerValue: rest[1],
+            id: rootID,
+            schema: fieldSchema as LikertSchema,
+            ...options
+        })
+    }
+
+    throw "Oops!"
+}
+
+const updateFlat = (obj: Record<string, any>, {id, schema, name, ...options}: UpdateOptions): Record<string, any> => {
+    const fieldSchema = schema.properties?.[id];
+
+    if (fieldSchema) {
+        const type = getInputType(fieldSchema);
+
+        return {
+            ...obj,
+            [name]: getValue(obj[name], {name, type, schema: fieldSchema, id, ...options})
+        }
+    }
+    throw "Oops! Flat."
+}
+
+
+const update = (obj: Record<string, any> = {}, options: UpdateOptions): Record<string, any> => {
+    if (options.id.includes("-")) {
+        return updateNested(obj, options)
+    }
+
+    return updateFlat(obj, options);
 }
 
 function useFormState(schema: ObjectSchema) {
   const ref = React.useRef();
   const [state, setState] = React.useState<Record<string, any>>({});
 
-  const onFormUpdate = (e: FormEvent) => {
+  const onFormUpdate = (e: ChangeEvent<HTMLInputElement>) => {
       e.preventDefault();
 
       // @ts-ignore
-      const path: string[] = e.target?.id.split("-");
-
-      // @ts-ignore
-      const value = (typeof e.target?.checked === "boolean")
-          // @ts-ignore
-          ? e.target?.checked
-          // @ts-ignore
-          : e.target.value;
-
-      // @ts-ignore
-      setState(s => update(s, path, value, schema));
+      setState(s => update(s, {
+          id: e.target.id,
+          name: e.target.name ?? e.target.id,
+          value: e.target.value,
+          checked: e.target?.checked,
+          schema
+      }));
   }
-  useEventListener<HTMLInputElement, FormEvent>(ref.current, "change", onFormUpdate);
+  useEventListener<HTMLInputElement, ChangeEvent<HTMLInputElement>>(ref.current, "change", onFormUpdate);
 
   console.log("STATE", state);
 
@@ -151,7 +200,7 @@ function useFormState(schema: ObjectSchema) {
 const MD = ({ body, data={} }: { body: string, data?: Record<string, any> }) => {
   const bodyProcessed = useMDToHTML(body, data);
   const schema = useSchema(body);
-  const {ref, state} = useFormState(schema);
+  const {ref} = useFormState(schema);
 
   return (
       // @ts-ignore
@@ -161,17 +210,27 @@ const MD = ({ body, data={} }: { body: string, data?: Record<string, any> }) => 
   )
 }
 
+const getIconHref = (emoji: string): string => `data:image/svg+xml,
+<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22>
+  <text y=%22.9em%22 font-size=%2290%22>${emoji}</text>
+</svg>`;
+
+const getFaviconEl = (): HTMLLinkElement => document.getElementById("favicon") as HTMLLinkElement;
+
+
 const Notionish = () => {
-  const banner = "https://www.arrowsrestaurant.com/wp-content/uploads/2020/06/healthy.jpg";
+    const hasBanner = !!data.banner;
+
+  React.useEffect(() => {
+      getFaviconEl().href = getIconHref(data.icon);;
+  }, []);
+
   return (
     <>
       <head>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css"/>
-        <link rel="icon"
-          href={`data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${data.icon}</text></svg>`}/>
         <title>{data.title}</title>
       </head>
-        { banner && (
+        { hasBanner && (
             <Box sx={{
                 width: "100vw",
                 position: "relative",
@@ -185,11 +244,11 @@ const Notionish = () => {
                     objectPosition: "center",
                 }
             }}>
-                <img src={banner} alt={"banner"}/>
+                <img src={data.banner} alt={"banner"}/>
             </Box>
         )}
         <main>
-            <Container maxWidth={"sm"} sx={{pt: 0, mt: -8}}>
+            <Container maxWidth={"sm"} sx={{pt: hasBanner ? 0 : 5, mt: hasBanner ? -8 : 0 }}>
             <Typography variant={"h2"} sx={{zIndex: 100}}>{data.icon}</Typography>
             <Typography variant="h4" sx={{fontWeight: "600"}}>{data.title}</Typography>
             <Divider sx={{my: 3}}/>

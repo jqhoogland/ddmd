@@ -7,7 +7,8 @@ import {remarkAsk, RemarkAskOptions} from "./remark-ask";
 import {MdastRoot} from "remark-rehype/lib";
 import {visit} from "unist-util-visit";
 import {Node, HProperties} from "hastscript/lib/core";
-import {JSONSchema, ObjectSchema} from "./remark-ask/core";
+import {JSONSchema} from "./remark-ask/core";
+import {ObjectSchema} from "./remark-ask/choice";
 
 export const createProcessor = (options: RemarkAskOptions): Processor =>
     unified()
@@ -23,7 +24,7 @@ export const createProcessor = (options: RemarkAskOptions): Processor =>
 
 
 export const processMDToHTML = async (body: string, options: RemarkAskOptions): Promise<string> =>
-    createProcessor(options).process(body).then(s => String(s));
+    createProcessor(options).process(body).then(s => s.toString());
 
 
 export const processSchema = async (body: string, options: RemarkAskOptions): Promise<ObjectSchema> => {
