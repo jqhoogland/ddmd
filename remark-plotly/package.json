@@ -1,0 +1,22 @@
+{
+  "name": "remark-plotly",
+  "version": "0.1.0",
+  "dependencies": {
+    "hastscript": "^7.0.2",
+    "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21",
+    "plotly.js-dist": "^2.12.1",
+    "unified": "^10.1.2",
+    "unist-util-filter": "^4.0.0",
+    "unist-util-visit": "^4.1.0",
+  },
+  "devDependencies": {
+    "typescript": "^4.7.2",
+    "@types/hast": "^2.3.4",
+    "@types/js-yaml": "^4.0.5",
+    "@types/lodash": "^4.14.182",
+    "@types/mdast": "^3.0.10",
+    "@types/plotly.js": "^1.54.22"
+  },
+  "author": "Jesse Hoogland"
+}

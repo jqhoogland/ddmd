@@ -191,3 +191,14 @@ label {
 .likert-col {
     min-width: 3rem
 }
+
+.graph {
+    max-height: 400px;
+    margin: 0 auto;
+}
+
+
+.gtitle {
+    font-weight: 600 !important; /* To override plotly */
+    font-family: var(--nc-font-sans);
+}

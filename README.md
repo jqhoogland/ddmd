@@ -1,46 +1,85 @@
-# Getting Started with Create React App
+# ddmd
+### Data-Driven Markdown
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[remark](https://github.com/remarkjs/remark) plugins to add support for forms ([remark-forms](/remark-forms)) and graphing via plotly ([remark-plotly](/remark-plotly)).
 
-## Available Scripts
 
-In the project directory, you can run:
+## Installation
 
-### `npm start`
+```shell
+npm install remark-forms remark-plotly
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Demo
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### \<Insert GIF Here\>
+// TODO ...
 
-### `npm test`
+## Usage
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Say we have the following file `example.md`:
 
-### `npm run build`
+````md
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# My Form
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```question
+$id: field_1
+title: Question 1
+description: Fill in a number please.
+type: number
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```plotly
+$id: plot_1
+data: 
+- x: [1, 2, 3, 4]
+  y: [10, 15, 13, 17]
+  type: "scatter"
+- x: [1, 2, 3, 4]
+  y: [16, 5, 11, 9]
+  type: "scatter"
 
-### `npm run eject`
+```
+````
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+And our module `example.js` looks like this:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```js
+import {readSync} from 'to-vfile'
+import {unified} from 'unified'
+import remarkParse from 'remark-parse'
+import remarkForm from 'remark-form'
+import remarkPlotly from 'remark-plotly'
+import remarkRehype from 'remark-rehype'
+import rehypeStringify from 'rehype-stringify'
+ 
+unified()
+    .use(remarkParse)
+    .use(remarkForm)
+    .use(remarkPlotly)
+    .use(rehypeStringify)
+    .process(readSync("example.md"))
+    .then(file => console.log(String(file)));
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Running this file (and applying some formatting) will give us:
 
-## Learn More
+```html
+// TODO
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## API 
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- [remark-forms](./remark-forms/README.md)
+- [remark-plotly](./remark-plotly/README.md)
+
+
+## Security
+
+Use of `remark-form` and `remark-plotly` only make sense if you also use [rehype](https://github.com/rehypejs/rehype) ([hast](https://github.com/syntax-tree/hast)), so you're opening yourself up to [cross-site scripting (XSS) attacks](https://github.com/rehypejs/rehype). Be careful.
+
+## License
+
+[MIT](./LICENSE) © [Health Curious](healthcurious.com)

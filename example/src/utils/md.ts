@@ -3,18 +3,20 @@ import remarkParse from "remark-parse";
 import {remarkCallout} from "./remark-callout";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
-import {remarkAsk, RemarkAskOptions} from "./remark-ask";
+import {remarkAsk, RemarkAskOptions} from "../../../remark-forms";
 import {MdastRoot} from "remark-rehype/lib";
 import {visit} from "unist-util-visit";
 import {Node, HProperties} from "hastscript/lib/core";
-import {JSONSchema} from "./remark-ask/core";
-import {ObjectSchema} from "./remark-ask/choice";
+import {JSONSchema} from "../../../remark-forms/core";
+import {ObjectSchema} from "../../../remark-forms/choice";
+import {remarkPlotly} from "../../../remark-plotly";
 
 export const createProcessor = (options: RemarkAskOptions): Processor =>
     unified()
         .use(remarkParse, {})
         .use(remarkCallout)
         .use(remarkAsk, options)
+        .use(remarkPlotly, {})
         .use(remarkRehype, {
           allowDangerousHtml: true,  // FIXME: DANGEROUS!
           passThrough: []

@@ -1,10 +1,8 @@
 
 const BODY = `
-### Let's take a step back.
-
 \`\`\`question
 $id: example_likert
-title: "How are you feeling about...?"
+title: "🚦 How are you feeling about...?"
 description: "Reflect on how you're feeling across the major dimensions of your life."    
 type: array
 $defs:
@@ -61,6 +59,36 @@ variant: button
 
 \`\`\`
 
+---
+
+\`\`\`plotly
+$id: example_graph
+$deps: 
+  "data[0].r": "=example_likert[].value"
+  "data[0].theta": "=$schema.properties.example_likert.items[].title"
+data:
+- type: 'scatterpolar'
+  r: []
+  theta: []
+  fill: 'toself'
+  
+layout:
+  title: "My Landscape"
+  polar:
+    radialaxis:
+      visible: true
+      range: [0, 5]
+  showlegend: false
+
+
+\`\`\`
+
+
+\`\`\`question
+title: 💭 Time to reflect.
+description: What's making you feel this way?
+type: string
+rows: 5
 `
 
 export const data = {

@@ -20,6 +20,7 @@ $id: q_textarea
 title: 📚 Text (long)
 description: Go ahead, write something longer...
 type: string
+
 rows: 5
 \`\`\`  
 

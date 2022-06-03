@@ -1,9 +1,14 @@
 import {Avatar, Box, CardHeader, Container, Divider, Typography} from "@mui/material";
 import React, {ChangeEvent, FormEvent, SyntheticEvent} from "react";
 import {processMDToHTML, processSchema} from "../utils/md";
-import { data } from "../examples/likert-demo";
-import {getInputType, InputType, JSONSchema} from "../utils/remark-ask/core";
-import {enumToChoice, isLikert, LikertAnswer, LikertSchema, ObjectSchema} from "../utils/remark-ask/choice";
+import { data } from "../examples/demo";
+import {getInputType, InputType, JSONSchema} from "../../../remark-forms/core";
+import {enumToChoice, isLikert, LikertAnswer, LikertSchema, ObjectSchema} from "../../../remark-forms/choice";
+import {GraphSchema, parseGraphSchemas, plotGraphs, updateGraphs} from "../../../remark-plotly/core";
+// @ts-ignore
+import {PlotlyHTMLElement} from "@types/plotly.js";
+import {JSONSchema7} from "json-schema";
+import {getDefaultInstance} from "../../../remark-forms/utils";
 
 
 /**
@@ -51,8 +56,6 @@ function useSchema(body: string): ObjectSchema {
     React.useEffect(() => {
         processSchema(body, {data}).then(setSchema);
     }, [body]);
-
-    console.log("SCHEMA", schema)
 
     return schema;
 }
@@ -109,8 +112,7 @@ interface UpdateLikertOptions extends BaseUpdateOptions {
 
 const updateLikert = (obj: Record<string, any>, {id, questionIdx, answerValue, schema, name}: UpdateLikertOptions): Record<string, any> => {
     const defaultAnswers = schema.items.map(
-            ({$id, title, description}) =>
-                ({$id, title, description, value: null}));
+            (schema: JSONSchema7) => ({$schema: schema, value: null}));
     const prevAnswers = obj[id] ?? defaultAnswers;
 
     const choice = enumToChoice(
@@ -118,13 +120,14 @@ const updateLikert = (obj: Record<string, any>, {id, questionIdx, answerValue, s
         schema.$defs.choices.enum
             .find((item: { const: any }) => item.const.toString() === answerValue)
     );
-    const answer: LikertAnswer = {...prevAnswers[questionIdx], value: choice};
+    const answer: LikertAnswer = {...prevAnswers[questionIdx], ...choice};
+    const answers = prevAnswers.map((prev: LikertAnswer) => (prev.$schema.$id === answer.$schema.$id ? answer : prev));
 
-    console.log({id, questionIdx, answerValue, schema, name, answer, choice, prevAnswers})
+    answers.$schema = schema;
 
     return {
         ...obj,
-        [id]: prevAnswers.map((prev: LikertAnswer) => (prev.$id === answer.$id ? answer : prev)),
+        [id]: answers,
         [name]: answer
     }
 }
@@ -138,7 +141,6 @@ const updateNested = (obj: Record<string, any>, {id, schema, ...options}: Update
     const fieldSchema = schema.properties?.[rootID];
 
     if (fieldSchema && isLikert(fieldSchema)) {
-        console.log({id, rootID, rest})
         return updateLikert(obj, {
             questionIdx: parseInt(rest[0]),
             answerValue: rest[1],
@@ -192,15 +194,49 @@ function useFormState(schema: ObjectSchema) {
   }
   useEventListener<HTMLInputElement, ChangeEvent<HTMLInputElement>>(ref.current, "change", onFormUpdate);
 
-  console.log("STATE", state);
+  // use Defaults on Mount
+  React.useEffect(() => {
+      if (schema.properties) {
+          const defaultState = getDefaultInstance(schema as JSONSchema);
+          setState({$schema: schema, ...defaultState});
+      }
+  }, [schema])
+
+    console.log("STATE", {state})
 
   return {ref, state}
+}
+
+const useGraphs = (state: any, body: string, render: string): [(PlotlyHTMLElement | null)[], GraphSchema[]] => {
+    const [elements, setElements] = React.useState<(PlotlyHTMLElement | null)[]>([]);
+    const [schemas, setSchemas] = React.useState<GraphSchema[]>([]);
+
+    React.useEffect(() => {
+        if (render) {
+            const graphSchemas = parseGraphSchemas(body);
+            setSchemas(graphSchemas);
+            plotGraphs(graphSchemas).then(setElements);
+        }
+    }, [render])
+
+
+    React.useEffect(() => {
+        console.log("Updating")
+        if (schemas) {
+            updateGraphs(schemas, state);
+        }
+    }, [schemas, state])
+
+    console.log("GRAPHS", {graphs: schemas})
+
+    return [elements, schemas]
 }
 
 const MD = ({ body, data={} }: { body: string, data?: Record<string, any> }) => {
   const bodyProcessed = useMDToHTML(body, data);
   const schema = useSchema(body);
-  const {ref} = useFormState(schema);
+  const {ref, state} = useFormState(schema);
+  useGraphs(state, body, bodyProcessed);
 
   return (
       // @ts-ignore

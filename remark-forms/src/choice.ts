@@ -152,8 +152,8 @@ interface LikertData {
     rows: LikertRow[];
 }
 
-export interface LikertAnswer extends Omit<JSONSchema, "properties">{
-    properties: Choice[]
+export interface LikertAnswer extends Omit<Choice, "properties"> {
+    $schema: LikertSchema
 }
 
 export const enumToChoice = ({const: const_, title, description}: JSONSchema7): Choice => ({
@@ -180,6 +180,7 @@ const getLikertData = (schema: LikertSchema): LikertData => {
         }))
     }
 }
+
 export const getLikertInput = (schema: LikertSchema): HastElements => {
     const {header, rows} = getLikertData(schema);
 

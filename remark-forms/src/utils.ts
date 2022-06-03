@@ -2,6 +2,7 @@ import {Element as HastElements} from "hast";
 import {h} from "hastscript";
 import {HTMLInputTypeAttribute} from "react";
 import {JSONSchema} from "./core";
+import {ObjectSchema} from "./choice";
 
 export interface FieldData {
     $id: string;
@@ -27,3 +28,29 @@ export const getInputWithType = (schema: JSONSchema, type: HTMLInputTypeAttribut
         }, schema.default)
     )
 )
+
+/**
+ * Does not actually necessarily return a valid instance of `schema`. Returns
+ * the falsy version for any leaf values that have no `default` provided.
+ * @param schema
+ */
+export const getDefaultInstance = (schema: JSONSchema): any => {
+    if ("default" in schema) {
+        return schema.default;
+    }
+
+    switch (schema.type) {
+        case "string":
+            return "";
+        case "array":
+            return [];
+        case "object":
+            const obj: Record<string, any> = {};
+            return Object.entries((schema as ObjectSchema).properties)
+                .forEach(([key, value]) => {
+                    obj[key] = getDefaultInstance(value);
+                })
+    }
+
+    return null
+}
