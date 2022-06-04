@@ -1,7 +1,7 @@
 import {Avatar, Box, CardHeader, Container, Divider, Typography} from "@mui/material";
 import React, {ChangeEvent, FormEvent, SyntheticEvent} from "react";
 import {processMDToHTML, processSchema} from "../utils/md";
-import { data } from "../examples/demo";
+import { data } from "../examples/likert-demo";
 import {InputType, JSONSchema} from "remark-forms/dist/types";
 import {getInputType} from "remark-forms";
 import {enumToChoice, isLikert, LikertAnswer, LikertSchema, ObjectSchema} from "remark-forms/dist/choice";
@@ -276,7 +276,7 @@ const Notionish = () => {
                 zIndex: -100,
                 img: {
                     width: "100%",
-                    maxHeight: "30vh",
+                    maxHeight: "25vh",
                     objectFit: "cover",
                     objectPosition: "center",
                 }
@@ -285,9 +285,10 @@ const Notionish = () => {
             </Box>
         )}
         <main>
-            <Container maxWidth={"sm"} sx={{pt: hasBanner ? 0 : 5, mt: hasBanner ? -8 : 0 }}>
-            <Typography variant={"h2"} sx={{zIndex: 100}}>{data.icon}</Typography>
-            <Typography variant="h4" sx={{fontWeight: "600"}}>{data.title}</Typography>
+            <Container maxWidth={"sm"}>
+                <CardHeader avatar={            <Typography variant={"h2"} sx={{zIndex: 100}}>{data.icon}</Typography>
+} title={            <Typography variant="h4" sx={{fontWeight: "600"}}>{data.title}</Typography>
+}/>
             <Divider sx={{my: 3}}/>
             <MD body={data.body}/>
             </Container>

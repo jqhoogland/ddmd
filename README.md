@@ -82,4 +82,4 @@ Use of `remark-form` and `remark-plotly` only make sense if you also use [rehype
 
 ## License
 
-[MIT](./LICENSE) © [Health Curious](healthcurious.com)
+[MIT](./LICENSE.md) © [Health Curious](healthcurious.com)

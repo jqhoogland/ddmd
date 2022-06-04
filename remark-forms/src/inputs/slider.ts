@@ -1,30 +1,7 @@
 import {Element as HastElements} from "hast";
-import {CURRENCIES} from "./constants";
 import {h} from "hastscript";
-import {JSONSchema} from "./types";
-import {getField} from "./utils";
-
-export const getQuantityInput = (schema: JSONSchema): HastElements => {
-    const units = schema.units ?? ""
-    const position = Object.values(CURRENCIES)
-        .indexOf(units) >= 0
-        ? "prefix" : "suffix";
-
-    return (
-        getField(schema,
-            h(".quantity",
-                h(`.units.${position}`, units),
-                // @ts-ignore
-                h(`input.${position}ed`, {
-                    type: "number",
-                    id: schema.$id,
-                    ariaDescribedby: `${schema.$id}-description`,
-                    placeholder: schema?.placeholder ?? "",
-                }, schema.default)
-            )
-        )
-    );
-}
+import {JSONSchema} from "../types";
+import {getField} from "../utils";
 
 const range = (min: number, max: number, step: number = 1): number[] =>
     Array.from({length: Math.floor((max - min) / step)}, (_, i) => min + i * step)
@@ -42,6 +19,11 @@ const getTicks = (ticks: true | (number | null)[], {
             .map(({value}, i) => ({value, ...(ticks[i] ? {label: ticks[i]} : {})}));
     }
 }
+
+
+/**
+ * TODO: `max` -> `maximum`; `min` -> `minimum`; `step` -> `multipleOf`
+ */
 export const getRangeInput = (schema: JSONSchema): HastElements => {
     let datalist = h("");
 

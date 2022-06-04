@@ -1,6 +1,6 @@
 import {Element as HastElements} from "hast";
 import {h} from "hastscript";
-import {ObjectSchema} from "./choice";
+import {ObjectSchema} from "./inputs/choice";
 import { InputType, JSONSchema } from "./types";
 
 export interface FieldData {

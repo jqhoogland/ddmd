@@ -1,15 +1,14 @@
 import {Element as HastElements} from "hast";
-import {getField, getInputWithType} from "./utils";
+import {getField, getInputWithType} from "../utils";
 import {h} from "hastscript";
-import {JSONSchema} from "./types";
+import {JSONSchema} from "../types";
 
 export interface TextSchema extends JSONSchema {
     rows?: number
 }
 
-export const getTextInput = (schema: TextSchema): HastElements => {
-    if ("rows" in schema) {
-        return getField(schema,
+export const getTextAreaInput = (schema: TextSchema): HastElements =>
+    getField(schema,
             // @ts-ignore
             h("textarea", {
                 id: schema.$id,
@@ -19,6 +18,10 @@ export const getTextInput = (schema: TextSchema): HastElements => {
                 rows: schema.rows
             }, schema.default)
         )
+
+export const getTextInput = (schema: TextSchema): HastElements => {
+    if ("rows" in schema) {
+        return getTextAreaInput(schema)
     }
     return getInputWithType(schema, "text")
 }

@@ -79,10 +79,7 @@ layout:
       visible: true
       range: [0, 5]
   showlegend: false
-
-
 \`\`\`
-
 
 \`\`\`question
 title: 💭 Time to reflect.

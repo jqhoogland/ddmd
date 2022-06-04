@@ -23,4 +23,4 @@ Use of `remark-plotly` only makes sense if you also use [rehype](https://github.
 
 ## License
 
-[MIT](../LICENSE) © [Health Curious](healthcurious.com)
+[MIT](../LICENSE.md) © [Health Curious](healthcurious.com)
