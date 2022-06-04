@@ -1,5 +1,3 @@
-import {CheckboxSchema} from "./checkbox";
-import {RadioSchema} from "./radio";
 import {Element as HastElements} from "hast";
 import {getField} from "../utils";
 import {h} from "hastscript";

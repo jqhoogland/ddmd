@@ -1,5 +1,8 @@
 
 const BODY = `
+
+--- ### Fieldset 1
+
 \`\`\`question
 $id: example_likert
 title: "🚦 How are you feeling about...?"
@@ -59,21 +62,10 @@ variant: button
 
 \`\`\`
 
-an actual p for reference
-
---- example
-
-Place the ramen in a pan, and rinse regularly sticky with smooth milk. Ferox uria sapienter magicaes hibrida est. Protons are the parasites of the carnivorous advice. Voxs cantare!
-
 --- /
 
 
---- # example_4
-
-An example with a title
-
---- /
-
+--- ### Fieldset 2
 
 \`\`\`plotly
 $id: example_graph
@@ -95,11 +87,19 @@ layout:
   showlegend: false
 \`\`\`
 
+--- /
+
+--- ### Fieldset 3
+
 \`\`\`question
 title: 💭 Time to reflect.
 description: What's making you feel this way?
 type: string
 rows: 5
+\`\`\`
+
+--- /
+
 `
 
 export const data = {

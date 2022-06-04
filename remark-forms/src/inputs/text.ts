@@ -9,15 +9,15 @@ export interface TextSchema extends JSONSchema {
 
 export const getTextAreaInput = (schema: TextSchema): HastElements =>
     getField(schema,
-            // @ts-ignore
-            h("textarea", {
-                id: schema.$id,
-                name: schema.$id,
-                ariaDescribedby: `${schema.$id}-description`,
-                placeholder: schema?.placeholder ?? "",
-                rows: schema.rows
-            }, schema.default)
-        )
+        // @ts-ignore
+        h("textarea", {
+            id: schema.$id,
+            name: schema.$id,
+            ariaDescribedby: `${schema.$id}-description`,
+            placeholder: schema?.placeholder ?? "",
+            rows: schema.rows
+        }, schema.default)
+    )
 
 export const getTextInput = (schema: TextSchema): HastElements => {
     if ("rows" in schema) {

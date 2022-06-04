@@ -9,9 +9,7 @@ import {Root} from "hast";
 import {visit} from "unist-util-visit";
 import {Code, Literal} from "mdast";
 import yaml from "js-yaml";
-import {filter} from "unist-util-filter";
-import {MdastRoot} from "remark-rehype/lib";
-import {Specific, unified} from "unified";
+import {unified} from "unified";
 import remarkParse from "remark-parse";
 import {Node} from "unist";
 // @ts-ignore
@@ -36,27 +34,27 @@ export interface RemarkPlotlyOptions {
 }
 
 export const remarkPlotly = (options?: RemarkPlotlyOptions) => {
-  const {codeBlockName = "plotly", codeBlockParser = yaml.load} = options ?? {};
-  return (tree: Root) => {
-    // @ts-ignore
-    visit(tree, { lang: codeBlockName }, (node: Code) => {
+    const {codeBlockName = "plotly", codeBlockParser = yaml.load} = options ?? {};
+    return (tree: Root) => {
         // @ts-ignore
-        try {
-            const graph: GraphSchema = <GraphSchema> codeBlockParser(node.value);
+        visit(tree, {lang: codeBlockName}, (node: Code) => {
             // @ts-ignore
-            node.type = "HTML";
-            node.data = {
-                hName: "div",
-                hProperties: {
-                    id: graph.$id,
-                    class: "graph"
+            try {
+                const graph: GraphSchema = <GraphSchema>codeBlockParser(node.value);
+                // @ts-ignore
+                node.type = "HTML";
+                node.data = {
+                    hName: "div",
+                    hProperties: {
+                        id: graph.$id,
+                        class: "graph"
+                    }
                 }
+            } catch (e) {
+                node.value = JSON.stringify(e, null, 2);
             }
-        } catch (e) {
-            node.value = JSON.stringify(e, null, 2);
-        }
-    });
-  };
+        });
+    };
 }
 
 
@@ -68,7 +66,7 @@ export const getGraphSchemas = (tree: Node, options?: RemarkPlotlyOptions): Grap
         if (node.type !== "code" || (node as Code).lang != codeBlockName) return null;
 
         try {
-            return <GraphSchema> codeBlockParser(node.value);
+            return <GraphSchema>codeBlockParser(node.value);
         } catch (e) {
             return null;
         }
@@ -132,7 +130,7 @@ const update = (obj: Data, deps: Record<string, any>, update: Record<string, any
 
 
 export const updateGraphs = (graphSchemas: GraphSchema[], state: Record<string, any>): Promise<(PlotlyHTMLElement | null)[]> =>
-    Promise.all(graphSchemas.map(async ({$id, $deps={}, data=[], layout={}}: GraphSchema) => {
+    Promise.all(graphSchemas.map(async ({$id, $deps = {}, data = [], layout = {}}: GraphSchema) => {
             const dataUpdated = {data, layout};
             update(dataUpdated, $deps, state);
             return Plotly.redraw(

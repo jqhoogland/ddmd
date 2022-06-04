@@ -13,4 +13,4 @@ export function isRadio(schema: JSONSchema): schema is RadioSchema {
 }
 
 export const getRadioInput = (schema: RadioSchema): HastElements =>
-    getListInput(schema, <Choice[]> schema.enum, "radio")
+    getListInput(schema, <Choice[]>schema.enum, "radio")

@@ -4,7 +4,6 @@ import {getField} from "../utils";
 import {h} from "hastscript";
 
 
-
 /**
  * A number input that displays `schema.units` after the number.
  */

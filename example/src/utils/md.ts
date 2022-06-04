@@ -18,8 +18,8 @@ export const createProcessor = (options: RemarkFormsOptions): Processor =>
         .use(remarkForms, options)
         .use(remarkPlotly, {})
         .use(remarkRehype, {
-          allowDangerousHtml: true,  // FIXME: DANGEROUS!
-          passThrough: []
+            allowDangerousHtml: true,  // FIXME: DANGEROUS!
+            passThrough: []
         })
         // .use(rehypeSanitize)
         .use(rehypeStringify)
@@ -31,7 +31,7 @@ export const processMDToHTML = async (body: string, options: RemarkFormsOptions)
 
 export const processSchema = async (body: string, options: RemarkFormsOptions): Promise<ObjectSchema> => {
     const processor = createProcessor(options);
-    const hastTree = <MdastRoot> await processor.run(processor.parse(body));
+    const hastTree = <MdastRoot>await processor.run(processor.parse(body));
 
     const schema: ObjectSchema = {
         $id: "form",

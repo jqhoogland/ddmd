@@ -1,27 +1,28 @@
 import {Literal, Root} from "hast";
 import {visitParents} from "unist-util-visit-parents";
-import {Content, Heading, HTML, Paragraph, PhrasingContent, ThematicBreak} from "mdast";
-import {Parent} from "mdast";
+import {Content, Heading, Paragraph, Parent} from "mdast";
 import {findAfter} from "unist-util-find-after";
 import {MdastNode} from "mdast-util-to-hast/lib";
+
 
 const getParagraphValue = (node: Paragraph): string | undefined =>
     (node.children?.[0] as Literal)?.value;
 
+
 const isFieldsetValueEnd = (value?: string): boolean =>
     value === "--- /"
+
 
 const isFieldsetEnd = (node: MdastNode): boolean =>
     node.type === "paragraph" && isFieldsetValueEnd(getParagraphValue(node));
 
+
 const isFieldsetValueStart = (value?: string): boolean =>
-    !!value &&  value.length > 4 && value.slice(0, 4) === "--- " && !isFieldsetValueEnd(value);
+    !!value && value.length > 4 && value.slice(0, 4) === "--- " && !isFieldsetValueEnd(value);
+
 
 const isFieldsetStart = (node: MdastNode): boolean =>
     node.type === "paragraph" && isFieldsetValueStart(getParagraphValue(node));
-
-
-
 
 
 /**
@@ -61,14 +62,16 @@ interface LegendNode extends Parent {
 
 const getLegend = (node: Paragraph): LegendNode => ({
     type: "legend",
-    data: { hName: "legend" },
+    data: {hName: "legend"},
     children: [getLegendContent(getParagraphValue(node)) as Content]
 })
 
 
-
 /**
  * Based on [remark-sectionize](https://github.com/jake-low/remark-sectionize/blob/master/index.js)
+ * TODO: Add support for a `meta` attribute (like on code blocks).
+ *       As in `--- My legend & title {extra=}
+ *
  */
 export const parseFieldsets = (tree: Root) => {
     // @ts-ignore

@@ -4,5 +4,5 @@ import {CheckboxSchema} from "./checkbox";
 import {getListInput} from "./choice";
 
 export const getToggleInput = (schema: JSONSchema): HastElements => (
-        getListInput(schema as CheckboxSchema, [{value: true, label: schema?.label}], "checkbox")
-    );
+    getListInput(schema as CheckboxSchema, [{value: true, label: schema?.label}], "checkbox")
+);
