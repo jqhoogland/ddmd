@@ -135,7 +135,6 @@ export const updateGraphs = (graphSchemas: GraphSchema[], state: Record<string, 
     Promise.all(graphSchemas.map(async ({$id, $deps={}, data=[], layout={}}: GraphSchema) => {
             const dataUpdated = {data, layout};
             update(dataUpdated, $deps, state);
-            console.log({data, dataUpdated})
             return Plotly.redraw(
                 document.getElementById($id),
                 dataUpdated.data,

@@ -26,7 +26,7 @@
  */
 import {Element as HastElements, Root} from "hast";
 import {visit} from "unist-util-visit";
-import {Code} from "mdast";
+import {Code, ThematicBreak} from "mdast";
 // @ts-ignore
 import yaml from "js-yaml";
 import {getRangeInput} from "./inputs/slider";
@@ -41,6 +41,7 @@ import {CheckboxSchema, getCheckboxInput, isCheckbox} from "./inputs/checkbox";
 import {Choice} from "./inputs/choice";
 import {getAutocompleteInput} from "./inputs/autocomplete";
 import {getSelectInput} from "./inputs/select";
+import {parseFieldsets} from "./fieldset";
 
 
 /**
@@ -139,12 +140,9 @@ export interface RemarkAskOptions {
     codeBlockIdentifier?: string
 }
 
-export const remarkForms = (options?: RemarkAskOptions) => {
-    // TODO: Default to json.loads & "input" instead of "question"
-    const { codeBlockIdentifier = "question", inputParser = yaml.loadAll } = options ?? {};
+const parseInputBlocks = (tree: Root, options: RemarkAskOptions) => {
+    const { codeBlockIdentifier = "question", inputParser = yaml.loadAll } = options;
 
-  return (tree: Root) => {
-    // @ts-ignore
     visit(tree, { lang: codeBlockIdentifier }, (node: Code) => {
         // @ts-ignore
         const inputSchemas: JSONSchema[] = inputParser(node.value);
@@ -161,5 +159,10 @@ export const remarkForms = (options?: RemarkAskOptions) => {
             hChildren: inputs,
         }
     });
-  };
 }
+
+export const remarkForms = (options: RemarkAskOptions = {}) =>
+  (tree: Root) => {
+    parseInputBlocks(tree, options);
+    parseFieldsets(tree);
+  };

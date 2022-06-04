@@ -59,7 +59,21 @@ variant: button
 
 \`\`\`
 
----
+an actual p for reference
+
+--- example
+
+Place the ramen in a pan, and rinse regularly sticky with smooth milk. Ferox uria sapienter magicaes hibrida est. Protons are the parasites of the carnivorous advice. Voxs cantare!
+
+--- /
+
+
+--- # example_4
+
+An example with a title
+
+--- /
+
 
 \`\`\`plotly
 $id: example_graph

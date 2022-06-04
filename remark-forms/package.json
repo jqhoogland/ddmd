@@ -4,8 +4,10 @@
   "dependencies": {
     "hastscript": "^7.0.2",
     "js-yaml": "^4.1.0",
+    "mdast-util-to-hast": "^12.1.1",
     "unified": "^10.1.2",
     "unist-util-filter": "^4.0.0",
+    "unist-util-find-after": "^4.0.0",
     "unist-util-visit": "^4.1.0"
   },
   "devDependencies": {

@@ -203,8 +203,6 @@ function useFormState(schema: ObjectSchema) {
       }
   }, [schema])
 
-    console.log("STATE", {state})
-
   return {ref, state}
 }
 
@@ -222,13 +220,10 @@ const useGraphs = (state: any, body: string, render: string): [(PlotlyHTMLElemen
 
 
     React.useEffect(() => {
-        console.log("Updating")
         if (schemas) {
             updateGraphs(schemas, state);
         }
     }, [schemas, state])
-
-    console.log("GRAPHS", {graphs: schemas})
 
     return [elements, schemas]
 }
