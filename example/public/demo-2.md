@@ -1,9 +1,13 @@
-
-const BODY = `
+---
+id: 123
+title: Life landscape
+icon: 🏔
+banner: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.amateurphotographer.co.uk%2Fwp-content%2Fuploads%2F2020%2F09%2FMAIN-Moonrise-over-Blea-Tarn-and-the-Langdales-scaled.jpg&f=1&nofb=1"
+---
 
 --- ### Fieldset 1
 
-\`\`\`question
+```question
 $id: example_likert
 title: "🚦 How are you feeling about...?"
 description: "Reflect on how you're feeling across the major dimensions of your life."    
@@ -60,14 +64,14 @@ items:
  
 variant: button 
 
-\`\`\`
+```
 
 --- /
 
 
 --- ### Fieldset 2
 
-\`\`\`plotly
+```plotly
 $id: example_graph
 $deps: 
   "data[0].r": "=example_likert[].value"
@@ -85,27 +89,18 @@ layout:
       visible: true
       range: [0, 5]
   showlegend: false
-\`\`\`
+```
 
 --- /
 
 --- ### Fieldset 3
 
-\`\`\`question
+```question
 title: 💭 Time to reflect.
 description: What's making you feel this way?
 type: string
 rows: 5
-\`\`\`
+```
 
 --- /
 
-`
-
-export const data = {
-  id: "123",
-  title: "Life landscape",
-  icon: "🏔",
-  banner: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.amateurphotographer.co.uk%2Fwp-content%2Fuploads%2F2020%2F09%2FMAIN-Moonrise-over-Blea-Tarn-and-the-Langdales-scaled.jpg&f=1&nofb=1",
-  body: BODY
-}

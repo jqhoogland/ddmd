@@ -1,5 +1,10 @@
+---
+id: 123
+title: Some title
+icon: 🦀
+banner: "https://www.arrowsrestaurant.com/wp-content/uploads/2020/06/healthy.jpg"
+---
 
-const BODY = `
 # Hello
 
 This is a body.
@@ -8,27 +13,27 @@ This is a body.
 
 #### Text
 
-\`\`\`question
+```question
 $id: q_text
 title: 📕 Text (short)
 description: Go ahead, write something...
 type: string
-\`\`\`  
+```  
 
-\`\`\`question
+```question
 $id: q_textarea
 title: 📚 Text (long)
 description: Go ahead, write something longer...
 type: string
 
 rows: 5
-\`\`\`  
+```  
 
 ---
 
 #### Numbers
 
-\`\`\`question
+```question
 $id: q_number
 title: "💯 Number"
 description: Type a number
@@ -46,10 +51,10 @@ description: Type a quantity (with units)
 type: quantity
 units: m
 
-\`\`\`
+```
 
 
-\`\`\`question
+```question
 $id: q_range
 title: "⭕️ Range"
 description: Choose a number out of a range.
@@ -70,7 +75,7 @@ step: 1
 ticks: [😭, null, 😞, null, 😑, null, 😊, null, 😁]
 
 
-\`\`\`
+```
 
 
 
@@ -78,7 +83,7 @@ ticks: [😭, null, 😞, null, 😑, null, 😊, null, 😁]
 
 #### Choices
 
-\`\`\`question
+```question
 $id: q_radio
 title: 🔘 Radio
 description: Select one option (and only one!).
@@ -103,11 +108,11 @@ items:
   - title: Another choice
     value: 3
 
-\`\`\`  
+```  
 
 ---
 
-\`\`\`question
+```question
 $id: q_dropdown_one
 title: 🔘 Dropdown (single)
 description: Select one option (and only one!).
@@ -140,11 +145,11 @@ items:
 
 variant: dropdown
 
-\`\`\`  
+```  
 
 ---
 
-\`\`\`question
+```question
 $id: q_autocomplete
 title: 🔘 Autocomplete (single)
 description: Select one option (and only one!).
@@ -157,12 +162,12 @@ enum:
   value: 3
 
 variant: autocomplete  
-\`\`\`  
+```  
 
 
 ---
 
-\`\`\`question
+```question
 $id: q_button
 title: 🔲 Button
 description: Push to toggle.
@@ -185,12 +190,12 @@ enum:
 
 variant: button
 
-\`\`\`  
+```  
 ---
 
 #### Contact
 
-\`\`\`question
+```question
 $id: q_telephone
 title: 📞 Telephone
 description: How can we reach you?
@@ -205,14 +210,14 @@ $id: q_url
 title: 🔗 URL
 description: Share a url.
 type: url
-\`\`\`  
+```  
 
 ---
 
 #### Times
 
 
-\`\`\`question
+```question
 $id: q_date
 title: 📆 Date
 description: What date is it today?
@@ -222,40 +227,38 @@ $id: q_time
 title: ⏰ Time
 description: What time is it right now?
 type: time
-\`\`\`  
+```  
 
 
-\`\`\`question
+```question
 $id: q_date
 title: ⏳ Datetime
 description: What date and time is it right now?
 type: datetime
 
-\`\`\`  
+```  
 
 ---
 
-\`\`\`question
+```question
 $id: q_file
 title: 📁 File
 description: Upload a file.
 type: file
-\`\`\`  
+```  
 
 ---
 
 
-\`\`\`callout 📈
+```callout 📈
 Cum devirginato experimentum, omnes magisteres perdere camerarius, bassus humani generises.
-\`\`\`
+```
 
 
-\`\`\`js
+```js
 const something = "something";
-\`\`\`
+```
 
-
-HMMM
 
 - a list
   - of elements
@@ -272,14 +275,4 @@ a *little* **interm**
   
 > And a block quote
 
-Cur habitio unda Festus hydras ducunt ad messor. Aususs messis!? \`codeas o125\` Vae, domus! Vae, heuretes!
-
-`
-
-export const data = {
-  id: "123",
-  title: "Some title",
-  icon: "🦀",
-  banner: "https://www.arrowsrestaurant.com/wp-content/uploads/2020/06/healthy.jpg",
-  body: BODY
-}
+Cur habitio unda Festus hydras ducunt ad messor. Aususs messis!? `codeas o125` Vae, domus! Vae, heuretes!

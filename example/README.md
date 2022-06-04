@@ -2,11 +2,12 @@
 
 Example of data-driven markdown + React.
 
-## Installation
+## Setup
 
 ```shell
 cd example
 npm i
+npm run start
 ```
 
 If you're working on either `remark-forms` or `remark-plotly`, you can run 

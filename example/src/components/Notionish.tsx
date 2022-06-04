@@ -1,7 +1,6 @@
 import {Avatar, Box, CardHeader, Container, Divider, Typography} from "@mui/material";
 import React, {ChangeEvent, FormEvent, SyntheticEvent} from "react";
 import {processMDToHTML, processSchema} from "../utils/md";
-import { data } from "../examples/likert-demo";
 import {InputType, JSONSchema} from "remark-forms/dist/types";
 import {getInputType} from "remark-forms";
 import {enumToChoice, isLikert, LikertAnswer, LikertSchema, ObjectSchema} from "remark-forms/dist/choice";
@@ -10,7 +9,12 @@ import {GraphSchema, parseGraphSchemas, plotGraphs, updateGraphs} from "remark-p
 import {PlotlyHTMLElement} from "@types/plotly.js";
 import {JSONSchema7} from "json-schema";
 import {getDefaultInstance} from "remark-forms/dist/utils";
-
+import remarkParse from "remark-parse";
+import {unified} from "unified";
+import remarkFrontmatter from "remark-frontmatter";
+import * as yaml from "js-yaml";
+import {MdastNode} from "mdast-util-to-hast/lib";
+import {FrontmatterContent} from "mdast";
 
 /**
  * Attach an modify an event listener `callback` to `event` on `item`.
@@ -55,7 +59,7 @@ function useSchema(body: string): ObjectSchema {
     });
 
     React.useEffect(() => {
-        processSchema(body, {data}).then(setSchema);
+        processSchema(body, {}).then(setSchema);
     }, [body]);
 
     return schema;
@@ -249,13 +253,51 @@ const getIconHref = (emoji: string): string => `data:image/svg+xml,
 
 const getFaviconEl = (): HTMLLinkElement => document.getElementById("favicon") as HTMLLinkElement;
 
+interface PageData {
+    title: string;
+    icon: string;
+    banner?: string;
+    body: string;
+}
+
+const getFrontmatter = (md: string): Omit<PageData, "body"> => {
+    const tree = unified()
+        .use(remarkParse)
+        .use(remarkFrontmatter, ['yaml'])
+        .parse(md);
+
+    const frontmatterEl = tree.children.find((node: MdastNode) => node.type === "yaml");
+    return (yaml.load((frontmatterEl as FrontmatterContent).value) as unknown) as Omit<PageData, "body">
+}
+
+
+const useData = (): PageData => {
+    const [data, setData] = React.useState({title: "Loading...", icon: "", body: ""});
+
+    React.useEffect(() => {
+        const href = window.location.href;
+        const relPath = href.slice(href.lastIndexOf("/") + 1, href.length);
+        fetch(`/${relPath}.md`)
+            .then((response: Response) => response.text())
+            .then((doc: string) => {
+                const frontmatter = getFrontmatter(doc);
+                const body = doc.slice(doc.indexOf("---", 4) + 4, doc.length);
+                setData({...frontmatter, body})
+            })
+    }, [])
+
+    console.log({data})
+
+    return data
+}
 
 const Notionish = () => {
-    const hasBanner = !!data.banner;
+  const data = useData();
+  const hasBanner = !!data.banner;
 
   React.useEffect(() => {
       getFaviconEl().href = getIconHref(data.icon);;
-  }, []);
+  }, [data]);
 
   return (
     <>
