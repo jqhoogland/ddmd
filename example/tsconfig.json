@@ -28,5 +28,6 @@
   },
   "include": [
     "example/src"
-  ]
+  ],
+
 }

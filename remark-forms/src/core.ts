@@ -29,7 +29,6 @@ import {visit} from "unist-util-visit";
 import {Code} from "mdast";
 // @ts-ignore
 import yaml from "js-yaml";
-import {JSONSchema7, JSONSchema7TypeName} from "json-schema";
 import {getQuantityInput, getRangeInput} from "./numeric";
 import {getInputWithType} from "./utils";
 import {
@@ -45,36 +44,8 @@ import {
     RadioSchema
 } from "./choice";
 import {getEmailInput, getTelInput, getURLInput} from "./contact";
-import {getTextInput} from "./text";
-
-export type CustomJSONSchemaTypeName = "quantity" | "range" | "datetime" | "date" | "time" | "email" | "file" |
-    "url" | "tel";
-
-export type JSONSchemaTypeName = JSONSchema7TypeName | CustomJSONSchemaTypeName;
-
-export interface JSONSchema extends Omit<JSONSchema7, "type" | "$id"> {
-    $id: string,
-    type: JSONSchemaTypeName,
-    placeholder?: string
-
-    // type = "boolean"
-    label?: string
-
-    // type = "range" | "number"
-    min?: number
-    max?: number
-    step?: number
-    ticks?: boolean | number | (number | null)[]  // TODO: Use enum instead
-
-    // Radios & Checkboxes
-    variant?: "dropdown" | "autocomplete" | "button"
-
-    // type = "quantity"
-    units?: string
-}
-
-export type InputType = JSONSchemaTypeName | "radio" | "checkbox" | "likert" | undefined;
-
+import {getTextInput, TextSchema} from "./text";
+import {InputType, JSONSchema } from "./types";
 
 
 /**
@@ -125,7 +96,7 @@ const getInput = (schema: JSONSchema): HastElements => {
             return getLikertInput(schema as LikertSchema);
         case "string":
         case undefined:
-            return getTextInput(schema)
+            return getTextInput(schema as TextSchema)
     }
     return getInputWithType(schema, schema.type);
 }

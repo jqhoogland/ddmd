@@ -1,7 +1,7 @@
 import {Element as HastElements} from "hast";
 import {CURRENCIES} from "./constants";
 import {h} from "hastscript";
-import {JSONSchema} from "./core";
+import {JSONSchema} from "./types";
 import {getField} from "./utils";
 
 export const getQuantityInput = (schema: JSONSchema): HastElements => {

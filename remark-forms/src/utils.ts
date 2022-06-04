@@ -1,8 +1,7 @@
 import {Element as HastElements} from "hast";
 import {h} from "hastscript";
-import {HTMLInputTypeAttribute} from "react";
-import {JSONSchema} from "./core";
 import {ObjectSchema} from "./choice";
+import { InputType, JSONSchema } from "./types";
 
 export interface FieldData {
     $id: string;
@@ -17,7 +16,7 @@ export const getField = (data: FieldData, ...rest: any[]): HastElements => (
         ...rest
     )
 )
-export const getInputWithType = (schema: JSONSchema, type: HTMLInputTypeAttribute): HastElements => (
+export const getInputWithType = (schema: JSONSchema, type: InputType): HastElements => (
     getField(schema,
         // @ts-ignore
         h("input", {

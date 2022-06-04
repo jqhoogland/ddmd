@@ -1,9 +1,9 @@
 import {Element as HastElements} from "hast";
 import {getField, getInputWithType} from "./utils";
 import {h} from "hastscript";
-import {JSONSchema} from "./core";
+import {JSONSchema} from "./types";
 
-interface TextSchema extends JSONSchema {
+export interface TextSchema extends JSONSchema {
     rows?: number
 }
 

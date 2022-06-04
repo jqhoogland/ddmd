@@ -2,13 +2,14 @@ import {Avatar, Box, CardHeader, Container, Divider, Typography} from "@mui/mate
 import React, {ChangeEvent, FormEvent, SyntheticEvent} from "react";
 import {processMDToHTML, processSchema} from "../utils/md";
 import { data } from "../examples/demo";
-import {getInputType, InputType, JSONSchema} from "../../../remark-forms/core";
-import {enumToChoice, isLikert, LikertAnswer, LikertSchema, ObjectSchema} from "../../../remark-forms/choice";
-import {GraphSchema, parseGraphSchemas, plotGraphs, updateGraphs} from "../../../remark-plotly/core";
+import {InputType, JSONSchema} from "remark-forms/dist/types";
+import {getInputType} from "remark-forms";
+import {enumToChoice, isLikert, LikertAnswer, LikertSchema, ObjectSchema} from "remark-forms/dist/choice";
+import {GraphSchema, parseGraphSchemas, plotGraphs, updateGraphs} from "remark-plotly";
 // @ts-ignore
 import {PlotlyHTMLElement} from "@types/plotly.js";
 import {JSONSchema7} from "json-schema";
-import {getDefaultInstance} from "../../../remark-forms/utils";
+import {getDefaultInstance} from "remark-forms/dist/utils";
 
 
 /**

@@ -2,7 +2,7 @@ import {Element as HastElements} from "hast";
 import {h} from "hastscript";
 import {getField} from "./utils";
 import {JSONSchema7, JSONSchema7Type} from "json-schema";
-import {JSONSchema} from "./core";
+import {JSONSchema} from "./types";
 
 export interface ObjectSchema extends Omit<JSONSchema, "type" | "properties"> {
     type: "object",

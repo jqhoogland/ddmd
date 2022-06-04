@@ -1,6 +1,6 @@
 import {Element as HastElements} from "hast";
 import {getInputWithType} from "./utils";
-import {JSONSchema} from "./core";
+import {JSONSchema} from "./types";
 
 export const getTelInput = (schema: JSONSchema): HastElements => {
     schema.placeholder = schema.placeholder || "+# (###) ### ###";
