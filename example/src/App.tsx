@@ -1,6 +1,6 @@
 import React from 'react';
-import Notionish from "./components/Notionish";
 import "./App.css";
+import Notionish from "./pages/RemarkFormsDemo";
 
 function App() {
   return (

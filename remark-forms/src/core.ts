@@ -41,6 +41,7 @@ import {CheckboxSchema, getCheckboxInput, isCheckbox} from "./inputs/checkbox";
 import {getAutocompleteInput} from "./inputs/autocomplete";
 import {getSelectInput} from "./inputs/select";
 import {parseFieldsets} from "./fieldset";
+export {update} from "./updates";
 
 
 /**

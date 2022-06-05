@@ -6,10 +6,10 @@ import rehypeStringify from "rehype-stringify";
 import {remarkForms, RemarkFormsOptions} from "remark-forms";
 import {MdastRoot} from "remark-rehype/lib";
 import {visit} from "unist-util-visit";
-import {Node, HProperties} from "hastscript/lib/core";
 import {JSONSchema} from "remark-forms/core";
 import {ObjectSchema} from "remark-forms/choice";
 import {remarkPlotly} from "remark-plotly";
+
 
 export const createProcessor = (options: RemarkFormsOptions): Processor =>
     unified()
@@ -23,10 +23,6 @@ export const createProcessor = (options: RemarkFormsOptions): Processor =>
         })
         // .use(rehypeSanitize)
         .use(rehypeStringify)
-
-
-export const processMDToHTML = async (body: string, options: RemarkFormsOptions): Promise<string> =>
-    createProcessor(options).process(body).then(s => s.toString());
 
 
 export const processSchema = async (body: string, options: RemarkFormsOptions): Promise<ObjectSchema> => {
