@@ -36,14 +36,14 @@ import {getInput} from "./inputs";
 export {update} from "./updates";
 
 
-export interface RemarkAskOptions {
+export interface RemarkFormOptions {
     extensions?: any[]  // TODO: Separate custom inputs & load them in
     inputParser?: (s: string) => JSONSchema[],
     data?: Record<string, any>,
     codeBlockIdentifier?: string
 }
 
-const parseInputBlocks = (tree: Root, options: RemarkAskOptions) => {
+const parseInputBlocks = (tree: Root, options: RemarkFormOptions) => {
     const {codeBlockIdentifier = "question", inputParser = yaml.loadAll} = options;
 
     visit(tree, {lang: codeBlockIdentifier}, (node: Code) => {
@@ -64,7 +64,7 @@ const parseInputBlocks = (tree: Root, options: RemarkAskOptions) => {
     });
 }
 
-export const remarkForms = (options: RemarkAskOptions = {}) =>
+export const remarkForms = (options: RemarkFormOptions = {}) =>
     (tree: Root) => {
         parseInputBlocks(tree, options);
         parseFieldsets(tree);
