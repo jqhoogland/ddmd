@@ -43,7 +43,7 @@ export const getListInput = (schema: CheckboxSchema | RadioSchema, items: Choice
                             id,
                             value: choice.value,
                         }),
-                        h("label", {for: id, unselectable: isButton}, choice?.label ?? choice.value)
+                        h("label", {for: id, unselectable: isButton.toString()}, choice?.label ?? choice.value)
                     ])
                 })
             )

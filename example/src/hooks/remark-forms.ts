@@ -1,9 +1,10 @@
 import {ObjectSchema} from "remark-forms/dist/choice";
-import React, {ChangeEvent, Ref} from "react";
+import React, {ChangeEvent, Ref, RefObject} from "react";
 import {processSchema} from "../utils/md";
 import {useEventListener} from "./shared";
 import {getDefaultInstance} from "remark-forms/dist/utils";
 import {JSONSchema} from "remark-forms/dist/types";
+import {update} from "remark-forms";
 
 /**
  * Given a string representing a Remark-Forms document, returns the JSON schema
@@ -28,7 +29,7 @@ function useSchema(body: string): ObjectSchema {
  * contents of that form, return the active instance of the `schema`
  * contained in the form.
  */
-function useFormState(ref: Ref<any>, schema: ObjectSchema): Record<string, any> {
+function useFormState(ref: RefObject<HTMLFormElement>, schema: ObjectSchema): Record<string, any> {
   const [state, setState] = React.useState<Record<string, any>>({});
 
   const onFormUpdate = (e: ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +44,10 @@ function useFormState(ref: Ref<any>, schema: ObjectSchema): Record<string, any> 
           schema
       }));
   }
-  useEventListener<HTMLInputElement, ChangeEvent<HTMLInputElement>>(ref.current, "change", onFormUpdate);
+
+  useEventListener<ChangeEvent<HTMLInputElement>, HTMLFormElement>(
+      "change", onFormUpdate, ref.current,
+  );
 
   // use Defaults on Mount
   React.useEffect(() => {
@@ -69,6 +73,9 @@ export const useForm = (body: string): UseForm => {
   const ref = React.useRef();
   const schema = useSchema(body);
   const state = useFormState(ref, schema);
+
+  console.debug("FORM", {ref, schema, state});
+  console.debug(JSON.stringify((({$schema, ...rest}) => rest)(state), null, 2))
 
   return {ref, state, schema};
 }

@@ -1,6 +1,8 @@
-import {InputType, JSONSchema} from "../dist/types";
-import {enumToChoice, isLikert, LikertAnswer, LikertSchema, ObjectSchema} from "../dist/choice";
-import {getInputType} from "../dist";
+import {InputType, JSONSchema} from "./types";
+import {getInputType, enumToChoice, isLikert, LikertAnswer, LikertSchema, ObjectSchema, Choice} from "./inputs";
+import {JSONSchema7} from "json-schema";
+import {RadioSchema} from "./inputs/radio";
+import {CheckboxSchema} from "./inputs/checkbox";
 
 type Value<T> = {
     string: T
@@ -19,27 +21,31 @@ interface UpdateValueOptions extends BaseUpdateOptions {
     type: InputType
 }
 
-function getValue(prevValue: Value<any>, {id, name, value, checked, type, schema}: UpdateValueOptions): any {
+const optionEquals = (opt: any, name: string): boolean => (opt?.value ?? "").toString() === name;
 
-    const optionEquals = (opt: any): boolean => (opt?.value ?? "").toString() === name;
+const getCheckboxValue = (prevValue: Value<Choice[]>, {checked, schema, name}: {checked: boolean, schema: CheckboxSchema, name: string}): Choice[] => {
+    if (!checked) {
+        return prevValue.value.filter((opt: any) => !optionEquals(opt, name));
+    }
+    return [
+      ...(prevValue?.value ?? []),
+      ...(schema as CheckboxSchema).items.enum.filter((opt: any) => optionEquals(opt, name))
+    ];
+}
+
+
+function getValue(prevValue: Value<any>, {id, name, value, checked, type, schema}: UpdateValueOptions): any {
 
     switch (type) {
         case "radio":
-            // @ts-ignore
-            return schema.enum.find(optionEquals);
+            return (schema as RadioSchema).enum.find((opt: Choice) => optionEquals(opt, name));
         case "checkbox":
-            if (!checked) {
-                return prevValue.value.filter((opt: any) => !optionEquals(opt));
-            }
-            // @ts-ignore
-            return [
-              ...(prevValue?.value ?? []),
-              // @ts-ignore
-              ...schema.items.enum.filter((opt: any) => optionEquals(opt))
-            ];
+            return getCheckboxValue(prevValue, {name, checked, schema: schema as CheckboxSchema});
         case "number":
             return {value: parseFloat(value)};
         case "quantity":
+            return {value: parseFloat(value), units: schema.units};
+        case "currency":
             return {value: parseFloat(value), units: schema.units};
     }
     return {value};
@@ -92,7 +98,7 @@ const updateNested = (obj: Record<string, any>, {id, schema, ...options}: Update
         })
     }
 
-    throw "Oops!"
+    throw `Couldn't find ${rootID} in schema with properties ${Object.keys(schema.properties)}`
 }
 
 const updateFlat = (obj: Record<string, any>, {id, schema, name, ...options}: UpdateOptions): Record<string, any> => {
@@ -106,14 +112,10 @@ const updateFlat = (obj: Record<string, any>, {id, schema, name, ...options}: Up
             [name]: getValue(obj[name], {name, type, schema: fieldSchema, id, ...options})
         }
     }
-    throw "Oops! Flat."
+    throw `Couldn't find ${id} in schema with properties ${Object.keys(schema.properties)}`
 }
 
 
-export const update = (obj: Record<string, any> = {}, options: UpdateOptions): Record<string, any> => {
-    if (options.id.includes("-")) {
-        return updateNested(obj, options)
-    }
+export const update = (obj: Record<string, any> = {}, options: UpdateOptions): Record<string, any> =>
+    (options.id.includes("-")) ? updateNested(obj, options) : updateFlat(obj, options)
 
-    return updateFlat(obj, options);
-}

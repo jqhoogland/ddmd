@@ -6,7 +6,6 @@ import {PlotlyHTMLElement} from "@types/plotly.js";
 import remarkParse from "remark-parse";
 import ReactMarkdown from "react-markdown";
 import {remarkCallout} from "../utils/remark-callout";
-import remarkRehype from "remark-rehype";
 import {ReactMarkdownOptions} from "react-markdown/lib/react-markdown";
 import {useForm} from "../hooks/remark-forms";
 import {useGraphs} from "../hooks/remark-plotly";
@@ -42,10 +41,6 @@ const DataDrivenMD = ({children, onChangeState, ...props}: RemarkFormProps) => {
                     remarkCallout,
                     remarkForms,
                     remarkPlotly,
-                    [remarkRehype, {
-                        allowDangerousHtml: true,  // FIXME: DANGEROUS!
-                        passThrough: []
-                    }],
                     ...(props?.remarkPlugins ?? [])
                 ]}
             >

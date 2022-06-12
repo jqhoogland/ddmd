@@ -57,8 +57,7 @@ export type BaseInputType =
     | "month"
     | "number"
     | "range"
-    |
-    "search"
+    | "search"
     | "file"
     | "radio"
     | "checkbox"
@@ -69,6 +68,7 @@ export type BaseInputType =
     | "url"
     | "color"
     | "autocomplete";
+
 export type ExtraInputType = "textarea" | "select:one" | "select:multiple";
 export type CustomInputType = "likert" | "toggle" | "quantity" | "currency";
 

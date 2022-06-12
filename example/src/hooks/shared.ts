@@ -1,25 +1,30 @@
 import React, {SyntheticEvent} from "react";
 
 /**
- * Attach an modify an event listener `callback` to `event` on `item`.
+ * Credits: [usehooks](https://usehooks.com/useEventListener/).
  */
-export function useEventListener<T extends HTMLElement, S extends SyntheticEvent>(item: T | undefined, event: string, callback: (e: S) => void) {
-    const [{prev}, setCallback] = React.useState({
-        prev: (e: S) => {}
-    });
+export function useEventListener<T extends SyntheticEvent, S extends EventTarget | DocumentAndElementEventHandlers>(
+    eventName: string,
+    handler: (e: T) => void,
+    element: S  // TODO: default = window
+) {
+  const savedHandler = React.useRef();
 
-    React.useEffect(() => {
-        if (item) {
-            // @ts-ignore
-            item.removeEventListener(event, prev);
-            // @ts-ignore
-            item.addEventListener(event, callback);
-            setCallback({prev: callback});
+  React.useEffect(() => {
+    savedHandler.current = handler;
+  }, [handler]);
 
-            return () => item.removeEventListener(event, callback);
-        }
-    }, [item, callback !== prev])
+  React.useEffect(
+    () => {
+      if (!element || !element.addEventListener) return;
+      const eventListener = (event) => savedHandler.current(event);
+      element.addEventListener(eventName, eventListener);
+      return () => element.removeEventListener(eventName, eventListener);
+    },
+    [eventName, element]
+  );
 }
+
 
 
 /**

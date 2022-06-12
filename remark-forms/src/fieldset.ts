@@ -1,6 +1,6 @@
 import {Literal, Root} from "hast";
 import {visitParents} from "unist-util-visit-parents";
-import {Content, Heading, Paragraph, Parent} from "mdast";
+import {Content, Heading, Paragraph, Parent, Text} from "mdast";
 import {findAfter} from "unist-util-find-after";
 import {MdastNode} from "mdast-util-to-hast/lib";
 
@@ -52,7 +52,7 @@ function getLegendContent(fieldsetStart: string): Heading | Text {
     return {
         type: "text",
         value
-    }
+    } as Text
 }
 
 interface LegendNode extends Parent {
