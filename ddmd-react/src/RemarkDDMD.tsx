@@ -1,15 +1,14 @@
-// @ts-ignore
-import React from "react";
+import React, { ForwardedRef, MutableRefObject, useRef } from "react";
 import { ObjectSchema, remarkForms } from "remark-forms";
 // import {remarkPlotly} from "remark-plotly";
-// @ts-ignore
 import ReactMarkdown from "react-markdown";
 import { ReactMarkdownOptions } from "react-markdown/lib/react-markdown";
 import { useForm } from "./hooks";
+import useEnsuredForwardedRef from "react-use/esm/useEnsuredForwardedRef";
 
 
 interface RemarkFormProps extends ReactMarkdownOptions {
-  onChange?: (update: { state: Record<string, any>, schema: ObjectSchema }) => void;
+  onChange?: (update: { state: Record<string, any>, schema: ObjectSchema | undefined }) => void;
 }
 
 
@@ -17,8 +16,9 @@ interface RemarkFormProps extends ReactMarkdownOptions {
  * A `<form>` wrapper around `<RemarkMarkdown/>` that adds support for
  * `remark-forms` and `remark-plotly` & that tracks form state.
  */
-const RemarkDDMD = ({ children, onChange, ...props }: RemarkFormProps) => {
-  const { ref, state, schema } = useForm(children);
+const RemarkDDMD: React.FC<RemarkFormProps> = ({ children, onChange, ...props }) => {
+  const ref = useRef<HTMLFormElement | null>(null);
+  const { state, schema } = useForm(ref, children);
   // useGraphs(state, children);
 
   React.useEffect(() => {
@@ -41,4 +41,4 @@ const RemarkDDMD = ({ children, onChange, ...props }: RemarkFormProps) => {
   );
 };
 
-export default RemarkDDMD
+export default RemarkDDMD;

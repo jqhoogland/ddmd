@@ -1,16 +1,24 @@
-import type { GetServerSidePropsContext, GetStaticPaths, GetStaticProps, NextPage } from 'next'
+import type { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
-import ReactDDMD from "ddmd-react/dist/RemarkDDMD";
 import FaviconEmoji from "./components/FaviconEmoji";
-import ReactMarkdown from "react-markdown";
 import fs from 'fs'
 import path from 'path'
 import remarkFrontmatter from "remark-frontmatter"
 import { getPageData } from "./components/utils/md";
 import Image from "next/image";
+// import dynamic from "next/dynamic";
+import React from "react";
+import {RemarkDDMD} from "ddmd-react";
+
+
+// const RemarkDDMD = dynamic(() => import("ddmd-react/dist/esm/dist/RemarkDDMD"), {ssr: false});
 
 const Home: NextPage<{children: string}> = ({ children }) => {
   const {title, icon, banner="", body} = getPageData(children);
+  
+  const handleChange = ({state, schema}) => {
+    console.log(state);
+  }
 
   return (
     <div>
@@ -37,11 +45,12 @@ const Home: NextPage<{children: string}> = ({ children }) => {
           <h1 className="text-6xl mb-0">{icon}</h1>
           <h1 className="text-4xl mb-0">{title}</h1>
         </div>
-        <ReactMarkdown
+        {body && <RemarkDDMD
           remarkPlugins={[remarkFrontmatter]}
+          onChange={handleChange}
         >
           {body}
-        </ReactMarkdown>        
+        </RemarkDDMD>}        
       </main>
     </div>
   )

@@ -1,3 +1,181 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+input[type="text"], input[type="number"], 
+input[type="date"], input[type="datetime"], input[type="time"],
+input[type="email"], input[type="tel"], input[type="url"] {
+    @apply input input-bordered;
+}
+
+input[type="checkbox"] {
+    @apply checkbox;
+}
+
+input[type="radio"] {
+    @apply radio;
+}
+
+input[type="range"] {
+    @apply range;
+}
+
+textarea {
+    @apply textarea textarea-bordered;
+}
+
+select {
+    @apply select;
+}
+
+button, input[type="submit"], .toggle-button > .toggle-button {
+    @apply btn btn-outline;
+}
+
+.toggle-button.form-choices {
+    @apply gap-2 flex flex-1
+}
+
+.toggle-button > .toggle-button {
+    @apply flex flex-1
+}
+
+
+.form-row {
+    @apply py-4;
+
+    display: flex;
+    flex-direction: column, row;  /* TODO */
+    justify-content: space-between;
+}
+
+.form-row > :not(.form-field:last-child):not(.toggle-button label):not(.quantity input) {
+     padding-right: 1.25rem;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    width: 100%
+}
+
+.form-field label {
+    font-weight: 600
+}
+
+.form-field span {
+    opacity: 80%;
+    font-size: .75rem;
+    padding-bottom: 0.5rem;
+}
+
+.form-choices {
+    display: flex;
+    flex-direction: column, row;
+    align-items: baseline;
+}
+
+.form-choices label {
+     padding-left: 0.75rem;
+}
+
+.form-field > .form-choices.radio:not(.toggle-button) :not(.form-choices-item:last-child) {
+     padding-right: 5rem;
+}
+
+
+.form-dropdown select, .form-autocomplete input {
+    width: 100%
+}
+
+.form-choices-item.toggle-button input {
+    display: none;
+}
+
+.form-choices-item.toggle-button label {
+    border: 1px solid var(--nc-bg-3);
+    background: var(--nc-bg-2)
+}
+
+.form-choices-item.toggle-button label:hover {
+    background: var(--nc-bg-3);
+}
+
+.form-choices-item.toggle-button label:active,
+.form-choices-item.toggle-button input:focus + label {
+    background: var(--nc-bg-3);
+}
+
+.form-choices-item.toggle-button input:checked + label {
+    background: var(--nc-bg-3);
+}
+
+[unselectable] {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.quantity {
+    position: relative;
+}
+
+.quantity input.prefixed {
+     padding-left: 1.5rem
+}
+
+.quantity input.suffixed {
+     padding-right: 1.5rem
+}
+
+.quantity .units {
+    position: absolute;
+    top: 0.4rem;
+    opacity: 0.8;
+    color: var(--nc-ac-tx);
+    font-size: 1.2rem;
+}
+
+.quantity .units.prefix {
+    left: 1.6rem;
+}
+
+.quantity .units.suffix {
+    right: 1.6rem;
+}
+
+.likert-table {
+    margin-top: 1rem;
+}
+
+.likert-col-title, .likert-col {
+    text-align: center;
+    vertical-align: middle;
+    padding-right: 0.5rem;
+}
+
+.likert-top-left {
+    background: none;
+    border-top: none;
+    border-left: none;
+}
+
+.likert-row-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.likert-col {
+    min-width: 3rem
+}
+
+.graph {
+    max-height: 400px;
+    margin: 0 auto;
+}
+
+.gtitle {
+    font-weight: 600 !important; /* To override plotly */
+    font-family: var(--nc-font-sans);
+}

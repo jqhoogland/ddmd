@@ -10,6 +10,18 @@
 npm install remark-forms remark-plotly
 ```
 
+#### Ok so actually you don't have to do any of the following, I'm just leaving it up as a testament to a futile bug hunting effort that cost me an entire morning.
+
+While developing, you'll want to take advantage of [`npm link`](https://docs.npmjs.com/cli/v8/commands/npm-link).
+And be careful with this [gotcha](https://medium.com/bbc-design-engineering/solving-the-problem-with-npm-link-and-react-hooks-266c832dd019).
+
+- After installing packages (`npm i`) in all four packages...
+- Run `npm link ../remark-plotly ../remark-forms` in `ddmd-react` and `demo`.
+- Run `npm link ../ddmd-react ../ddmd-react/node_modules/react ../ddmd-react/node_modules/react-dom` in `demo`. 
+
+
+
+
 ## Demo
 
 ### \<Insert GIF Here\>
