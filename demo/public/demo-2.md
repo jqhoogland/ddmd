@@ -2,7 +2,7 @@
 id: 123
 title: Life landscape
 icon: 🏔
-banner: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.amateurphotographer.co.uk%2Fwp-content%2Fuploads%2F2020%2F09%2FMAIN-Moonrise-over-Blea-Tarn-and-the-Langdales-scaled.jpg&f=1&nofb=1"
+banner: "/benjamin-voros-phIFdC6lA4E-unsplash.jpg"
 ---
 
 --- ### Fieldset 1

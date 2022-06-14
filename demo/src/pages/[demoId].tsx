@@ -7,6 +7,7 @@ import fs from 'fs'
 import path from 'path'
 import remarkFrontmatter from "remark-frontmatter"
 import { getPageData } from "./components/utils/md";
+import Image from "next/image";
 
 const Home: NextPage<{children: string}> = ({ children }) => {
   const {title, icon, banner="", body} = getPageData(children);
@@ -21,12 +22,21 @@ const Home: NextPage<{children: string}> = ({ children }) => {
 
       {
         banner && (
-          <img src={banner} className="w-full max-h-[30vh] object-cover" alt="hello"/>
+          <div className="w-full h-[30vh] relative">
+            <Image 
+              src={banner} 
+              layout="fill"
+              alt="hello"
+              objectFit="cover"
+            />
+          </div>
         )
       }
-      <main className="max-w-screen-md mx-auto prose pt-16 pb-32">
-        <h1 className="text-[5rem]">{icon}</h1>
-        <h1 className="text-5xl">{title}</h1>
+      <main className="max-w-screen-md mx-auto prose pt-16 pb-32 px-4">
+        <div className="flex gap-8 items-baseline pb-4">
+          <h1 className="text-6xl mb-0">{icon}</h1>
+          <h1 className="text-4xl mb-0">{title}</h1>
+        </div>
         <ReactMarkdown
           remarkPlugins={[remarkFrontmatter]}
         >

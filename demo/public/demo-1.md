@@ -1,8 +1,8 @@
 ---
-id: 123
-title: Some title
-icon: 🦀
-banner: "https://www.arrowsrestaurant.com/wp-content/uploads/2020/06/healthy.jpg"
+id: 1
+title: Welcome to Data-Driven Markdown!
+icon: 👋
+banner: "/johannes-plenio-E-Zuyev2XWo-unsplash.jpg"
 ---
 
 This is a body.
