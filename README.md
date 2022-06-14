@@ -19,7 +19,8 @@ And be careful with this [gotcha](https://medium.com/bbc-design-engineering/solv
 - Run `npm link ../remark-plotly ../remark-forms` in `ddmd-react` and `demo`.
 - Run `npm link ../ddmd-react ../ddmd-react/node_modules/react ../ddmd-react/node_modules/react-dom` in `demo`. 
 
-
+#### Hot loading
+To make changes in one submodule show up immediately in the others, run `tsc -w` in `remark-forms` or `remark-plotly`. Run `npm run build:watch` in `ddmd-react`.
 
 
 ## Demo

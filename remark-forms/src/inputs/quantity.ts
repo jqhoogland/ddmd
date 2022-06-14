@@ -18,6 +18,7 @@ export const getQuantityInput = (schema: JSONSchema): HastElements => {
                 h(`input.suffixed`, {
                     type: "number",
                     id: schema.$id,
+                    name: schema.$id,
                     ariaDescribedby: `${schema.$id}-description`,
                     placeholder: schema?.placeholder ?? "",
                 }, schema.default)
@@ -41,6 +42,7 @@ export const getCurrencyInput = (schema: JSONSchema): HastElements => {
                 h(`input.prefixed`, {
                     type: "number",
                     id: schema.$id,
+                    name: schema.$id,
                     ariaDescribedby: `${schema.$id}-description`,
                     placeholder: schema?.placeholder ?? "",
                 }, schema.default)

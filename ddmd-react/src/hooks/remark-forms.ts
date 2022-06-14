@@ -5,7 +5,6 @@ import { getDefaultInstance } from "remark-forms/dist/utils";
 import { update } from "remark-forms";
 import useAsync from "react-use/esm/useAsync";
 import useEvent from 'react-use/esm/useEvent';
-import { s } from "hastscript";
 
 /**
  * Given a string representing a Remark-Forms document, returns the JSON schema
@@ -30,6 +29,8 @@ const useFormState = (
     e.preventDefault();
 
     if (schema) {
+      console.log(e.target.id, e.target.name, e.target.value)
+
       setState(s => update(s, {
         id: e.target.id,
         name: e.target.name ?? e.target.id,

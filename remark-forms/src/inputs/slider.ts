@@ -41,6 +41,7 @@ export const getRangeInput = (schema: JSONSchema): HastElements => {
             h("input", {
                 type: "range",
                 id: schema.$id,
+                name: schema.$id,
                 ariaDescribedby: `${schema.$id}-description`,
                 placeholder: schema?.placeholder ?? "",
                 min: schema?.min,

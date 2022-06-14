@@ -103,6 +103,7 @@ const updateNested = (obj: Record<string, any>, {id, schema, ...options}: Update
 
 const updateFlat = (obj: Record<string, any>, {id, schema, name, ...options}: UpdateOptions): Record<string, any> => {
     const fieldSchema = schema.properties?.[id];
+    console.log(obj, {id, schema, name, options, fieldSchema})
 
     if (fieldSchema) {
         const type = getInputType(fieldSchema);

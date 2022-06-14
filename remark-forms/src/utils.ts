@@ -22,6 +22,7 @@ export const getInputWithType = (schema: JSONSchema, type: InputType): HastEleme
         h("input", {
             type,
             id: schema.$id,
+            name: schema.$id,
             ariaDescribedby: `${schema.$id}-description`,
             placeholder: schema?.placeholder ?? ""
         }, schema.default)
