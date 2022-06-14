@@ -5,6 +5,7 @@ import {MdastNode} from "mdast-util-to-hast/lib";
 import * as yaml from "js-yaml";
 import {FrontmatterContent} from "mdast";
 import React from "react";
+import { useRouter } from "next/router";
 
 
 interface PageData {
@@ -13,17 +14,6 @@ interface PageData {
     banner?: string;
     body: string;
 }
-
-
-const FALLBACK = `---
-title: Datadriven Markdown
-icon: 📀
----
-
-- [Demo 1](/demo-1)
-- [Demo 2](/demo-2)
-
-`
 
 
 // TODO: This is probably overkill. It'd be cheaper to slice out the
@@ -53,22 +43,21 @@ const getData = (md: string) => {
  *
  * If the file doesn't exist, renders `FALLBACK` instead.
  */
-export const useMdRouter = (): PageData => {
+export const useFetchMD = (): PageData => {
     const [data, setData] = React.useState({title: "Loading...", icon: "", body: ""});
+    const router = useRouter();
 
     React.useEffect(() => {
-        const href = window.location.href;
-        const relPath = href.slice(href.lastIndexOf("/") + 1, href.length);
-
-        if (["demo-1", "demo-2"].indexOf(relPath) < 0) {
-            setData(getData(FALLBACK))
+        if (["demo-1", "demo-2"].indexOf(router.pathname) < 0) {
+            setData(getData(""))
         } else {
             // TODO: Can we do this with a dynamic import instead?
-            fetch(`/${relPath}.md`)
+            fetch(`/${router.pathname}.md`)
                 .then((response: Response) => response.text())
                 .then((doc: string) => setData(getData(doc)))
         }
-    }, [])
+    }, [router.pathname])
 
     return data
 }
+

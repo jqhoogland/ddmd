@@ -9,13 +9,14 @@
     "react-dom": "^18.1.0",
     "react-markdown": "^8.0.3",
     "react-scripts": "5.0.1",
+    "react-use": "^17.4.0",
     "rehype-sanitize": "^5.0.1",
     "rehype-stringify": "^9.0.3",
-    "remark-parse": "^10.0.1",
-    "remark-rehype": "^10.1.0",
-    "remark-stringify": "^10.0.2",
     "remark-forms": "file:../remark-forms",
-    "remark-plotly": "file:../remark-plotly"
+    "remark-parse": "^10.0.1",
+    "remark-plotly": "file:../remark-plotly",
+    "remark-rehype": "^10.1.0",
+    "remark-stringify": "^10.0.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -53,5 +54,10 @@
     "@types/react": "^18.0.10",
     "@types/react-dom": "^18.0.5",
     "typescript": "^4.7.2"
-  }
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.js",
+  "files": [
+    "/dist"
+  ]
 }

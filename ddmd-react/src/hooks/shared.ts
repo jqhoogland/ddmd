@@ -4,12 +4,12 @@ import React, { SyntheticEvent } from "react";
 /**
  * Credits: [usehooks](https://usehooks.com/useEventListener/).
  */
-export function useEventListener<T extends SyntheticEvent, S extends EventTarget | DocumentAndElementEventHandlers | undefined>(
+export function useEventListener<T extends SyntheticEvent, S extends EventTarget | DocumentAndElementEventHandlers | undefined | null>(
   eventName: string,
   handler: EventListener,
   element: S  // TODO: default = window
 ) {
-  const savedHandler = React.useRef<EventListener>();
+  const savedHandler = React.useRef<EventListener>(() => {});
 
   React.useEffect(() => {
     savedHandler.current = handler;
@@ -17,14 +17,9 @@ export function useEventListener<T extends SyntheticEvent, S extends EventTarget
 
   React.useEffect(
     () => {
-      if (!element || !element.addEventListener) {
-        return;
-      }
-      if (savedHandler?.current) {
-        // @ts-ignore
-        const eventListener = ((e: T) => savedHandler.current(e)) as unknown as EventListener;
-        element.addEventListener(eventName, eventListener);
-        return () => element.removeEventListener(eventName, eventListener);
+      if (element?.addEventListener) {
+        element.addEventListener(eventName, savedHandler.current);
+        return () => element.removeEventListener(eventName, savedHandler.current);
       }
     },
     [eventName, element]
@@ -33,8 +28,7 @@ export function useEventListener<T extends SyntheticEvent, S extends EventTarget
 
 
 /**
- * See: [Goodbye, useEffect by David
- * Khourshid](https://youtu.be/HPoC-k7Rxwo?t=1314)
+ * See: [Goodbye, useEffect by David Khourshid](https://youtu.be/HPoC-k7Rxwo?t=1314)
  */
 export const useMount = (effect: () => void) => {
   const executedRef = React.useRef(false);
@@ -45,5 +39,6 @@ export const useMount = (effect: () => void) => {
     const res = effect();
     executedRef.current = true;
     return res;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };
