@@ -1,7 +1,7 @@
+import { useEvent } from 'react-use';
 import { ObjectSchema } from "remark-forms/dist/choice";
 import React, { ChangeEvent, LegacyRef, MutableRefObject, Ref } from "react";
 import processSchema from "../processSchema";
-import { useEventListener } from "./shared";
 import { getDefaultInstance } from "remark-forms/dist/utils";
 import { JSONSchema } from "remark-forms/dist/types";
 import { update } from "remark-forms";
@@ -52,7 +52,7 @@ function useFormState(
     }));
   };
 
-  useEventListener<ChangeEvent<HTMLInputElement>, HTMLFormElement | undefined>(
+  useEvent<HTMLFormElement>(
     "change", onFormUpdate as unknown as EventListener, ref?.current,
   );
 

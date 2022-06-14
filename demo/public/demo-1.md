@@ -5,8 +5,6 @@ icon: 🦀
 banner: "https://www.arrowsrestaurant.com/wp-content/uploads/2020/06/healthy.jpg"
 ---
 
-# Hello
-
 This is a body.
 
 ---
