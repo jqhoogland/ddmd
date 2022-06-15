@@ -24,7 +24,6 @@ const Home: NextPage<{children: string}> = ({ children }) => {
   const [schema, setSchema] = React.useState({});
 
   const handleChange = React.useCallback(({state: {$schema, ...state}}: {state: {$schema: any, [key: string]: any}}) => {
-    console.log("Changing")
     setState(state);
     if (!$schema) setSchema($schema);
   }, [])

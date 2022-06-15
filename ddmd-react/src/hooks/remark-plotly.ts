@@ -21,17 +21,17 @@ import React from "react";
  * @param body The original .md file. 
  * @returns 
  */
-export const useGraphs = (state: any, body: string): [(PlotlyHTMLElement | null)[], GraphSchema[]] => {
-    const [elements, setElements] = React.useState<(PlotlyHTMLElement | null)[]>([]);
+export const useGraphs = (state: any, body: string): [(PlotlyHTMLElement | undefined)[], GraphSchema[]] => {
+    const [elements, setElements] = React.useState<(PlotlyHTMLElement | undefined)[]>([]);
     const [schemas, setSchemas] = React.useState<GraphSchema[]>([]);
 
-    React.useEffect(() => {
+    React.useEffect(() => {  // "useMountGraph"
         const graphSchemas = parseGraphSchemas(body);
         setSchemas(graphSchemas);
         plotGraphs(graphSchemas).then(setElements);
     }, [body])
 
-    React.useEffect(() => {
+    React.useEffect(() => {  // "useUpdateGraph"
         if (schemas) {
             updateGraphs(schemas, state);
         }
