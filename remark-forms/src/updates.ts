@@ -80,6 +80,10 @@ const updateLikert = (obj: Record<string, any>, {id, questionIdx, answerValue, s
     }
 }
 
+const updateList = (obj: Record<string, any>, {id, questionIdx, answerValue, schema, name}: UpdateLikertOptions): Record<string, any> => { 
+    return {...obj, [name]: answerValue}
+}
+
 interface UpdateOptions extends BaseUpdateOptions {
     schema: ObjectSchema;
 }
@@ -88,14 +92,24 @@ const updateNested = (obj: Record<string, any>, {id, schema, ...options}: Update
     const [rootID, ...rest] = id.split("-");
     const fieldSchema = schema.properties?.[rootID];
 
-    if (fieldSchema && isLikert(fieldSchema)) {
-        return updateLikert(obj, {
-            questionIdx: parseInt(rest[0]),
-            answerValue: rest[1],
-            id: rootID,
-            schema: fieldSchema as LikertSchema,
-            ...options
-        })
+    if (fieldSchema) {
+        if (isLikert(fieldSchema)) {
+            return updateLikert(obj, {
+                questionIdx: parseInt(rest[0]),
+                answerValue: rest[1],
+                id: rootID,
+                schema: fieldSchema as LikertSchema,
+                ...options
+            })
+        } else {
+            return updateList(obj, {
+                questionIdx: parseInt(rest[0]),
+                answerValue: rest[1],
+                id: rootID,
+                schema: fieldSchema as LikertSchema,
+                ...options
+            })
+        }
     }
 
     throw `Couldn't find ${rootID} in schema with properties ${Object.keys(schema.properties)}`
@@ -103,8 +117,6 @@ const updateNested = (obj: Record<string, any>, {id, schema, ...options}: Update
 
 const updateFlat = (obj: Record<string, any>, {id, schema, name, ...options}: UpdateOptions): Record<string, any> => {
     const fieldSchema = schema.properties?.[id];
-    console.log(obj, {id, schema, name, options, fieldSchema})
-
     if (fieldSchema) {
         const type = getInputType(fieldSchema);
 

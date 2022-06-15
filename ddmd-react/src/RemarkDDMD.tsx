@@ -1,10 +1,10 @@
 import React, { ForwardedRef, MutableRefObject, useRef } from "react";
 import { ObjectSchema, remarkForms } from "remark-forms";
-// import {remarkPlotly} from "remark-plotly";
+import {remarkPlotly} from "remark-plotly";
 import ReactMarkdown from "react-markdown";
 import { ReactMarkdownOptions } from "react-markdown/lib/react-markdown";
 import { useForm } from "./hooks";
-import useEnsuredForwardedRef from "react-use/esm/useEnsuredForwardedRef";
+import { useGraphs } from "./hooks/remark-plotly";
 
 
 interface RemarkFormProps extends ReactMarkdownOptions {
@@ -19,7 +19,7 @@ interface RemarkFormProps extends ReactMarkdownOptions {
 const RemarkDDMD: React.FC<RemarkFormProps> = ({ children, onChange, ...props }) => {
   const ref = useRef<HTMLFormElement | null>(null);
   const { state, schema } = useForm(ref, children);
-  // useGraphs(state, children);
+  useGraphs(state, children);
 
   React.useEffect(() => {
     onChange?.({ state, schema });
@@ -31,7 +31,7 @@ const RemarkDDMD: React.FC<RemarkFormProps> = ({ children, onChange, ...props })
         {...props}
         remarkPlugins={[
           remarkForms,
-          // remarkPlotly,
+          remarkPlotly,
           ...(props?.remarkPlugins ?? [])
         ]}
       >

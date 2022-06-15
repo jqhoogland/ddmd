@@ -35,7 +35,6 @@ export const getListInput = (schema: CheckboxSchema | RadioSchema, items: Choice
         getField(schema,
             h(`.form-choices.${type}${variant}`, items.map((choice: Choice) => {
                     const id = `${schema.$id}-${choice?.id ?? choice.value}`
-
                     return h(`.form-choices-item.${type}${variant}`, [
                         h("input", {
                             type,

@@ -3,16 +3,22 @@ import React, { ChangeEvent, MutableRefObject } from "react";
 import processSchema from "../processSchema";
 import { getDefaultInstance } from "remark-forms/dist/utils";
 import { update } from "remark-forms";
-import useAsync from "react-use/esm/useAsync";
 import useEvent from 'react-use/esm/useEvent';
 
 /**
  * Given a string representing a Remark-Forms document, returns the JSON schema
  * for the form as a whole (where `$id`s become the keys of the form).
  */
-const useSchema = (body: string): ObjectSchema | undefined => 
-  useAsync(() => processSchema(body, {}), [body]).value;
+const useSchema = (body: string): ObjectSchema | undefined => {
+  const [schema, setSchema] = React.useState<ObjectSchema | undefined>();
 
+  React.useEffect(()  => {
+    processSchema(body, {}).then(setSchema);
+  }, [body])
+
+  return schema;
+}
+  
 
 /**
  * Given a `ref` to a `<form/>` element and a json `schema` that describes the
@@ -29,8 +35,6 @@ const useFormState = (
     e.preventDefault();
 
     if (schema) {
-      console.log(e.target.id, e.target.name, e.target.value)
-
       setState(s => update(s, {
         id: e.target.id,
         name: e.target.name ?? e.target.id,

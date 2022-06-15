@@ -5,20 +5,29 @@ import fs from 'fs'
 import path from 'path'
 import remarkFrontmatter from "remark-frontmatter"
 import { getPageData } from "./components/utils/md";
-import Image from "next/image";
-// import dynamic from "next/dynamic";
-import React from "react";
-import {RemarkDDMD} from "ddmd-react";
+import Image from "next/image";import React from "react";
+import dynamic from "next/dynamic";
+
+const RemarkDDMD = dynamic(
+  // @ts-ignore
+  () => import("ddmd-react").then(mod => mod.RemarkDDMD),
+  {ssr: false}
+);
 
 
-// const RemarkDDMD = dynamic(() => import("ddmd-react/dist/esm/dist/RemarkDDMD"), {ssr: false});
+const MemoizedForm: typeof RemarkDDMD  = React.memo(RemarkDDMD);
+
 
 const Home: NextPage<{children: string}> = ({ children }) => {
   const {title, icon, banner="", body} = getPageData(children);
-  
-  const handleChange = ({state, schema}) => {
-    console.log(state);
-  }
+  const [state, setState] = React.useState({});
+  const [schema, setSchema] = React.useState({});
+
+  const handleChange = React.useCallback(({state: {$schema, ...state}}: {state: {$schema: any, [key: string]: any}}) => {
+    console.log("Changing")
+    setState(state);
+    if (!$schema) setSchema($schema);
+  }, [])
 
   return (
     <div>
@@ -45,12 +54,29 @@ const Home: NextPage<{children: string}> = ({ children }) => {
           <h1 className="text-6xl mb-0">{icon}</h1>
           <h1 className="text-4xl mb-0">{title}</h1>
         </div>
-        {body && <RemarkDDMD
+
+        <h2>Current State</h2>
+        <p>Scroll down for the schema</p>
+        <pre>
+          <code lang="json">
+            {JSON.stringify(state, null, 2)}  
+          </code> 
+        </pre>
+
+        {body && <MemoizedForm
           remarkPlugins={[remarkFrontmatter]}
+          // @ts-ignore
           onChange={handleChange}
         >
           {body}
-        </RemarkDDMD>}        
+        </MemoizedForm>
+        }
+
+        <pre>
+          <code lang="json">
+            {JSON.stringify(schema, null, 2)}
+          </code>
+        </pre>
       </main>
     </div>
   )
