@@ -1,6 +1,6 @@
 {
-  "name": "demo",
-  "version": "0.1.0",
+  "name": "@ddmd/demo",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,19 +9,19 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ddmd/react": "workspace:../react",
+    "@ddmd/remark-forms": "workspace:../remark-forms",
+    "@ddmd/remark-plotly": "workspace:../remark-plotly",
     "daisyui": "^2.15.3",
-    "ddmd-react": "file:../ddmd-react",
     "js-yaml": "^4.1.0",
     "mdast": "^3.0.0",
     "mdast-util-to-hast": "^12.1.1",
     "next": "12.1.6",
-    "react": "file:../ddmd-react/node_modules/react",
-    "react-dom": "file:../ddmd-react/node_modules/react-dom",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "react-markdown": "^8.0.3",
-    "remark-forms": "file:../remark-forms",
     "remark-frontmatter": "^4.0.1",
     "remark-parse": "^10.0.1",
-    "remark-plotly": "file:../remark-plotly",
     "unified": "^10.1.2"
   },
   "devDependencies": {

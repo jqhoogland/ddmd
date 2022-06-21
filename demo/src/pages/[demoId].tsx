@@ -5,25 +5,27 @@ import fs from 'fs'
 import path from 'path'
 import remarkFrontmatter from "remark-frontmatter"
 import { getPageData } from "./components/utils/md";
-import Image from "next/image";import React from "react";
+import Image from "next/image";
+import React from "react";
 import dynamic from "next/dynamic";
+
 
 const RemarkDDMD = dynamic(
   // @ts-ignore
-  () => import("ddmd-react").then(mod => mod.RemarkDDMD),
-  {ssr: false}
+  () => import("@ddmd/react").then(mod => mod.RemarkDDMD),
+  { ssr: false }
 );
 
 
-const MemoizedForm: typeof RemarkDDMD  = React.memo(RemarkDDMD);
+const MemoizedForm: typeof RemarkDDMD = React.memo(RemarkDDMD);
 
 
-const Home: NextPage<{children: string}> = ({ children }) => {
-  const {title, icon, banner="", body} = getPageData(children);
+const Home: NextPage<{ children: string }> = ({ children }) => {
+  const { title, icon, banner = "", body } = getPageData(children);
   const [state, setState] = React.useState({});
   const [schema, setSchema] = React.useState({});
 
-  const handleChange = React.useCallback(({state: {$schema, ...state}}: {state: {$schema: any, [key: string]: any}}) => {
+  const handleChange = React.useCallback(({ state: { $schema, ...state } }: { state: { $schema: any, [key: string]: any } }) => {
     setState(state);
     if (!$schema) setSchema($schema);
   }, [])
@@ -39,8 +41,8 @@ const Home: NextPage<{children: string}> = ({ children }) => {
       {
         banner && (
           <div className="w-full h-[30vh] relative">
-            <Image 
-              src={banner} 
+            <Image
+              src={banner}
               layout="fill"
               alt="hello"
               objectFit="cover"
@@ -58,8 +60,8 @@ const Home: NextPage<{children: string}> = ({ children }) => {
         <p>Scroll down for the schema</p>
         <pre>
           <code lang="json">
-            {JSON.stringify(state, null, 2)}  
-          </code> 
+            {JSON.stringify(state, null, 2)}
+          </code>
         </pre>
 
         {body && <MemoizedForm
@@ -89,16 +91,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const data = fs.readFileSync(dataPath).toString();
 
   return {
-    props: {children: data}
+    props: { children: data }
   }
 }
 
 export const getStaticPaths: GetStaticPaths = () => {
   return {
     paths: [
-      {params: {demoId: "demo-1"}},
-      {params: {demoId: "demo-2"}}
+      { params: { demoId: "demo-1" } },
+      { params: { demoId: "demo-2" } }
     ],
-    fallback: false 
+    fallback: false
   }
 }

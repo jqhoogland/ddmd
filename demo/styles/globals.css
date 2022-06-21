@@ -179,3 +179,7 @@ button, input[type="submit"], .toggle-button > .toggle-button {
     font-weight: 600 !important; /* To override plotly */
     font-family: var(--nc-font-sans);
 }
+
+fieldset {
+    @apply border-2 border-base-300; 
+}
