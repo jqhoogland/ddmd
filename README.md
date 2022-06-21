@@ -1,28 +1,17 @@
 # ddmd
 ### Data-Driven Markdown
 
-[remark](https://github.com/remarkjs/remark) plugins to add support for forms ([remark-forms](/remark-forms)) and graphing via plotly ([remark-plotly](/remark-plotly)).
+[remark](https://github.com/remarkjs/remark) plugins to add support for forms ([@ddmd/remark-forms](packages/remark-forms)) and graphing via plotly ([@ddmd/remark-plotly](packages/remark-plotly)).
 
 
 ## Installation
 
 ```shell
-npm install remark-forms remark-plotly
+npm install @ddmd/remark-forms @ddmd/remark-plotly 
+
+# If you're working with react
+npm install @ddmd/react
 ```
-
-#### Ok so actually you don't have to do any of the following, I'm just leaving it up as a testament to a futile bug hunting effort that cost me an entire morning.
-
-While developing, you'll want to take advantage of [`npm link`](https://docs.npmjs.com/cli/v8/commands/npm-link).
-And be careful with this [gotcha](https://medium.com/bbc-design-engineering/solving-the-problem-with-npm-link-and-react-hooks-266c832dd019).
-
-- After installing packages (`npm i`) in all four packages...
-- Run `npm link ../remark-plotly ../remark-forms` in `ddmd-react` and `demo`.
-- Run `npm link ../ddmd-react ../ddmd-react/node_modules/react ../ddmd-react/node_modules/react-dom` in `demo`. 
-
-#### Hot loading
-To make changes in one submodule show up immediately in the others, run `tsc -w` in `remark-forms` or `remark-plotly`. Run `npm run build:watch` in `ddmd-react`.
-
-
 ## Demo
 
 ### \<Insert GIF Here\>

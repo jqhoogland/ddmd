@@ -1,7 +1,8 @@
 {
-  "name": "remark-plotly",
+  "name": "@ddmd/remark-plotly",
+  "author": "Jesse Hoogland",
   "description": "A remark plugin to add support for graphs with plotly.",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "dependencies": {
     "hastscript": "^7.0.2",
     "js-yaml": "^4.1.0",
@@ -21,11 +22,5 @@
     "@types/mdast": "^3.0.10",
     "@types/plotly.js": "^1.54.22",
     "typescript": "^4.7.2"
-  },
-  "author": "Jesse Hoogland",
-  "main": "dist/index.js",
-  "types": "dist/index.js",
-  "files": [
-    "/dist"
-  ]
+  }
 }
