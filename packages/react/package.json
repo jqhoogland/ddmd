@@ -1,11 +1,9 @@
 {
   "name": "@ddmd/react",
   "version": "1.0.0",
-  "private": false,
-  "scripts": {},
   "dependencies": {
-    "@ddmd/remark-forms": "workspace:../remark-forms",
-    "@ddmd/remark-plotly": "workspace:../remark-plotly",
+    "@ddmd/remark-forms": "*",
+    "@ddmd/remark-plotly": "*",
     "hastscript": "^7.0.2",
     "js-yaml": "^4.1.0",
     "react-markdown": "^8.0.3",
