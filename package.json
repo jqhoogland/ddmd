@@ -7,7 +7,8 @@
         "build": "turbo run build",
         "test": "turbo run test",
         "lint": "turbo run lint",
-        "dev": "turbo run dev"
+        "dev": "turbo run dev",
+        "demo": "pnpm --prefix demo run dev"
     },
     "prettier": {
         "printWidth": 80,
@@ -30,8 +31,6 @@
         "typescript": "4.7.3"
     },
     "dependencies": {
-        "@prisma/client": "^2.21.2",
-        "@prisma/engines": "3.16.0-33.7a18b3b3a7f3c555f78372d40fe90241c4d6f433",
         "prettier": "^2.7.1"
     }
 }
