@@ -11,7 +11,6 @@ import dynamic from "next/dynamic";
 
 
 const RemarkDDMD = dynamic(
-  // @ts-ignore
   () => import("@ddmd/react").then(mod => mod.RemarkDDMD),
   { ssr: false }
 );

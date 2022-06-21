@@ -1,5 +1,5 @@
 {
-  "name": "remark-forms",
+  "name": "@ddmd/remark-forms",
   "version": "1.0.0",
   "author": "Jesse Hoogland",
   "dependencies": {
