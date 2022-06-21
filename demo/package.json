@@ -9,9 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ddmd/react": "workspace:../react",
-    "@ddmd/remark-forms": "workspace:../remark-forms",
-    "@ddmd/remark-plotly": "workspace:../remark-plotly",
+    "@ddmd/react": "workspace:../packages/react",
+    "@ddmd/remark-forms": "workspace:../packages/remark-forms",
+    "@ddmd/remark-plotly": "workspace:../packages/remark-plotly",
     "daisyui": "^2.15.3",
     "js-yaml": "^4.1.0",
     "mdast": "^3.0.0",
