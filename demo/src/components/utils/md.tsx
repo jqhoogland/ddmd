@@ -1,11 +1,9 @@
-import {unified} from "unified";
+import { unified } from "unified";
+import type {Literal} from "hast";
 import remarkParse from "remark-parse";
 import remarkFrontmatter from "remark-frontmatter";
-import {MdastNode} from "mdast-util-to-hast/lib";
+import { MdastNode } from "mdast-util-to-hast/lib";
 import * as yaml from "js-yaml";
-import {FrontmatterContent} from "mdast";
-import React from "react";
-import { useRouter } from "next/router";
 
 
 interface PageData {
@@ -25,12 +23,12 @@ export const getFrontmatter = (md: string): Omit<PageData, "body"> => {
         .parse(md);
 
     const frontmatterEl = tree.children.find((node: MdastNode) => node.type === "yaml");
-    return (yaml.load((frontmatterEl as FrontmatterContent).value) as unknown) as Omit<PageData, "body">
+    return (yaml.load((frontmatterEl as Literal).value) as unknown) as Omit<PageData, "body">
 }
 
 
 export const getPageData = (md: string) => {
     const frontmatter = getFrontmatter(md);
     const body = md.slice(md.indexOf("---", 4) + 4, md.length);
-    return {...frontmatter, body}
+    return { ...frontmatter, body }
 }

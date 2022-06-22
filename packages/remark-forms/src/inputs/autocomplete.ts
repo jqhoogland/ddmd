@@ -1,8 +1,8 @@
-import {RadioSchema} from "./radio";
-import {Element as HastElements} from "hast";
 import {getField} from "../utils";
 import {h} from "hastscript";
 import {getOptions} from "./choice";
+import type {RadioSchema} from "./radio";
+import type {Element as HastElements} from "hast";
 
 export const getAutocompleteInput = (schema: RadioSchema): HastElements => {
     const options = getOptions(schema.enum);

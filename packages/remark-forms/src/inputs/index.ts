@@ -1,7 +1,4 @@
-import {InputType, JSONSchema} from "../types";
-import {Element as HastElements} from "hast";
 import {getRadioInput, isRadio, RadioSchema} from "./radio";
-import {CheckboxSchema, getCheckboxInput, isCheckbox} from "./checkbox";
 import {getSelectInput} from "./select";
 import {getAutocompleteInput} from "./autocomplete";
 import {getCurrencyInput, getQuantityInput} from "./quantity";
@@ -10,6 +7,9 @@ import {getRangeInput} from "./slider";
 import {getLikertInput, isLikert, LikertSchema} from "./likert";
 import {getTextInput, TextSchema} from "./text";
 import {getInputWithType} from "../utils";
+import {CheckboxSchema, getCheckboxInput, isCheckbox} from "./checkbox";
+import type {InputType, JSONSchema} from "../types";
+import type {Element as HastElements} from "hast";
 
 export * from "./likert";
 export * from "./choice";

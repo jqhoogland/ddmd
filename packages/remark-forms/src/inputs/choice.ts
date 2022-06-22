@@ -1,10 +1,10 @@
-import {Element as HastElements} from "hast";
 import {h} from "hastscript";
 import {getField} from "../utils";
-import {JSONSchema7} from "json-schema";
-import {JSONSchema} from "../types";
-import {RadioSchema} from "./radio";
-import {CheckboxSchema} from "./checkbox";
+import type {Element as HastElements} from "hast";
+import type {JSONSchema7} from "json-schema";
+import type {JSONSchema} from "../types";
+import type {RadioSchema} from "./radio";
+import type {CheckboxSchema} from "./checkbox";
 
 export interface ObjectSchema extends Omit<JSONSchema, "type" | "properties"> {
     type: "object",

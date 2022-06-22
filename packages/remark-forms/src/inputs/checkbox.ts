@@ -1,7 +1,7 @@
-import {Element as HastElements} from "hast";
-import {JSONSchema} from "../types";
-import {JSONSchema7} from "json-schema";
 import {Choice, getListInput} from "./choice";
+import type {Element as HastElements} from "hast";
+import type {JSONSchema} from "../types";
+import type {JSONSchema7} from "json-schema";
 
 export interface CheckboxItemsSchema extends Omit<JSONSchema7, "enum"> {
     enum: Choice[]

@@ -1,8 +1,8 @@
-import {Literal, Root} from "hast";
 import {visitParents} from "unist-util-visit-parents";
-import {Content, Heading, Paragraph, Parent, Text} from "mdast";
 import {findAfter} from "unist-util-find-after";
-import {MdastNode} from "mdast-util-to-hast/lib";
+import type { Node, Data } from "unist";
+import type {Literal, Root} from "hast";
+import type {Content, Heading, Paragraph, Parent, Text} from "mdast";
 
 
 const getParagraphValue = (node: Paragraph): string | undefined =>
@@ -13,16 +13,18 @@ const isFieldsetValueEnd = (value?: string): boolean =>
     value === "--- /"
 
 
-const isFieldsetEnd = (node: MdastNode): boolean =>
-    node.type === "paragraph" && isFieldsetValueEnd(getParagraphValue(node));
+const isParagraph = (node: Node<Data>): node is Paragraph => node.type === "paragraph";
+
+const isFieldsetEnd = (node: Node<Data>): boolean =>
+    isParagraph(node) && isFieldsetValueEnd(getParagraphValue(node));
 
 
 const isFieldsetValueStart = (value?: string): boolean =>
     !!value && value.length > 4 && value.slice(0, 4) === "--- " && !isFieldsetValueEnd(value);
 
 
-const isFieldsetStart = (node: MdastNode): boolean =>
-    node.type === "paragraph" && isFieldsetValueStart(getParagraphValue(node));
+const isFieldsetStart = (node: Node<Data>): boolean =>
+    isParagraph(node) &&  isFieldsetValueStart(getParagraphValue(node));
 
 
 /**
@@ -63,7 +65,7 @@ interface LegendNode extends Parent {
 const getLegend = (node: Paragraph): LegendNode => ({
     type: "legend",
     data: {hName: "legend"},
-    children: [getLegendContent(getParagraphValue(node)) as Content]
+    children: [getLegendContent(getParagraphValue(node) ?? "") as Content]
 })
 
 

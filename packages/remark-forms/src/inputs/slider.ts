@@ -1,7 +1,7 @@
-import {Element as HastElements} from "hast";
 import {h} from "hastscript";
-import {JSONSchema} from "../types";
 import {getField} from "../utils";
+import type {Element as HastElements} from "hast";
+import type {JSONSchema} from "../types";
 
 const range = (min: number, max: number, step: number = 1): number[] =>
     Array.from({length: Math.floor((max - min) / step)}, (_, i) => min + i * step)

@@ -34,7 +34,7 @@ const getCheckboxValue = (prevValue: Value<Choice[]>, {checked, schema, name}: {
 }
 
 
-function getValue(prevValue: Value<any>, {id, name, value, checked, type, schema}: UpdateValueOptions): any {
+function getValue(prevValue: Value<any>, {id, name, value, checked=false, type, schema}: UpdateValueOptions): any {
 
     switch (type) {
         case "radio":

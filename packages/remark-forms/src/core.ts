@@ -24,14 +24,13 @@
  * - [] Add enum support (via datalist) for inputs other than radio/checkbox
  *
  */
-import {Root} from "hast";
 import {visit} from "unist-util-visit";
-import {Code} from "mdast";
-// @ts-ignore
 import yaml from "js-yaml";
-import {JSONSchema} from "./types";
 import {parseFieldsets} from "./fieldset";
 import {getInput} from "./inputs";
+import type {Root} from "hast";
+import type {Code} from "mdast";
+import type {JSONSchema} from "./types";
 
 export {update} from "./updates";
 

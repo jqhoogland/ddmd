@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "author": "Jesse Hoogland",
   "dependencies": {
+    "@types/unist": "^2.0.6",
     "hastscript": "^7.0.2",
     "js-yaml": "^4.1.0",
     "mdast-util-to-hast": "^12.1.1",
+    "remark": "^14.0.2",
     "unified": "^10.1.2",
     "unist-util-filter": "^4.0.0",
     "unist-util-find-after": "^4.0.0",
-    "unist-util-visit": "^4.1.0"
+    "unist-util-visit": "^4.1.0",
+    "unist-util-visit-parents": "^5.1.0"
   },
   "devDependencies": {
     "@types/hast": "^2.3.4",

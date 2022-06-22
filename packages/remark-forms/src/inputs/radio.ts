@@ -1,6 +1,6 @@
-import {JSONSchema} from "../types";
-import {Element as HastElements} from "hast";
 import {Choice, getListInput} from "./choice";
+import type {JSONSchema} from "../types";
+import type {Element as HastElements} from "hast";
 
 
 export interface RadioSchema extends Omit<JSONSchema, "enum"> {

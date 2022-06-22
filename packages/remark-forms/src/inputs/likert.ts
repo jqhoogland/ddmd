@@ -1,9 +1,9 @@
-import {JSONSchema} from "../types";
-import {Element as HastElements} from "hast";
 import {h} from "hastscript";
 import {getField} from "../utils";
-import {JSONSchema7} from "json-schema";
 import {Choice, enumToChoice} from "./choice";
+import type {JSONSchema7} from "json-schema";
+import type {JSONSchema} from "../types";
+import type {Element as HastElements} from "hast";
 
 /** Likert */
 

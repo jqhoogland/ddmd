@@ -1,8 +1,8 @@
-import {Element as HastElements} from "hast";
 import {getField} from "../utils";
 import {h} from "hastscript";
 import {Choice, getOptions} from "./choice";
-import {JSONSchema} from "../types";
+import type {Element as HastElements} from "hast";
+import type {JSONSchema} from "../types";
 
 export const getSelectInput = (schema: JSONSchema, items: Choice[]): HastElements => {
     const options = getOptions(items);

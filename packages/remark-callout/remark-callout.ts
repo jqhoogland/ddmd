@@ -1,7 +1,7 @@
-import {Root} from "hast";
 import {visit} from "unist-util-visit";
-import {Code} from "mdast";
 import {h} from "hastscript";
+import type {Root} from "hast";
+import type {Code} from "mdast";
 
 export const remarkCallout = () => {
   return (tree: Root) => {

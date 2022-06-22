@@ -1,4 +1,4 @@
-import React, { ForwardedRef, MutableRefObject, useRef } from "react";
+import React, { useRef } from "react";
 import { ObjectSchema, remarkForms } from "@ddmd/remark-forms/src";
 import { remarkPlotly } from "@ddmd/remark-plotly/src";
 import ReactMarkdown from "react-markdown";

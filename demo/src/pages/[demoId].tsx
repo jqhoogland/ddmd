@@ -1,10 +1,10 @@
 import type { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
-import FaviconEmoji from "./components/FaviconEmoji";
+import FaviconEmoji from "../components/FaviconEmoji";
 import fs from 'fs'
 import path from 'path'
 import remarkFrontmatter from "remark-frontmatter"
-import { getPageData } from "./components/utils/md";
+import { getPageData } from "../components/utils/md";
 import Image from "next/image";
 import React from "react";
 import dynamic from "next/dynamic";

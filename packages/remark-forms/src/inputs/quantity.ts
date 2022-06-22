@@ -1,7 +1,7 @@
-import {JSONSchema} from "../types";
-import {Element as HastElements} from "hast";
 import {getField} from "../utils";
 import {h} from "hastscript";
+import type {JSONSchema} from "../types";
+import type {Element as HastElements} from "hast";
 
 
 /**
