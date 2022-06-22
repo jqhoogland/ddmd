@@ -1,6 +1,6 @@
 import {PlotlyHTMLElement} from "plotly.js";
-import type { GraphSchema } from "@ddmd/remark-plotly";
-import {parseGraphSchemas, plotGraphs, updateGraphs} from "@ddmd/remark-plotly";
+import type { GraphSchema } from "@ddmd/remark-plotly/src";
+import {parseGraphSchemas, plotGraphs, updateGraphs} from "@ddmd/remark-plotly/src";
 import React from "react";
 
 /**

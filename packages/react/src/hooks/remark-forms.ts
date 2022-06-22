@@ -1,8 +1,8 @@
-import type { ObjectSchema, JSONSchema } from "@ddmd/remark-forms";
+import type { ObjectSchema, JSONSchema } from "@ddmd/remark-forms/src";
 import React, { ChangeEvent, MutableRefObject } from "react";
 import processSchema from "../processSchema";
-import { getDefaultInstance } from "@ddmd/remark-forms/utils";
-import { update } from "@ddmd/remark-forms";
+import { getDefaultInstance } from "@ddmd/remark-forms/src/utils";
+import { update } from "@ddmd/remark-forms/src";
 import useEvent from 'react-use/esm/useEvent';
 
 /**
