@@ -1,7 +1,7 @@
 import {Processor, unified} from "unified";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
-import {remarkForms, JSONSchema, ObjectSchema, RemarkFormOptions} from "@ddmd/remark-forms";
+import {remarkForms, JSONSchema, ObjectSchema, RemarkFormOptions} from "@ddmd/remark-forms/src";
 import {visit} from "unist-util-visit";
 import { MdastRoot } from "remark-rehype/lib";
 
