@@ -24,47 +24,48 @@
  * - [] Add enum support (via datalist) for inputs other than radio/checkbox
  *
  */
-import {visit} from "unist-util-visit";
-import yaml from "js-yaml";
-import {parseFieldsets} from "./fieldset";
-import {getInput} from "./inputs";
-import type {Root} from "hast";
-import type {Code} from "mdast";
-import type {JSONSchema} from "./types";
+import { visit } from 'unist-util-visit';
+import yaml from 'js-yaml';
+import type { Root } from 'hast';
+import type { Code } from 'mdast';
+import { parseFieldsets } from './fieldset';
+import { getInput } from './inputs';
+import type { JSONSchema } from './types';
 
-export {update} from "./updates";
-
+export { update } from './updates';
 
 export interface RemarkFormOptions {
-    extensions?: any[]  // TODO: Separate custom inputs & load them in
-    inputParser?: (s: string) => JSONSchema[],
-    data?: Record<string, any>,
-    codeBlockIdentifier?: string
+  extensions?: any[]; // TODO: Separate custom inputs & load them in
+  inputParser?: (s: string) => JSONSchema[];
+  data?: Record<string, any>;
+  codeBlockIdentifier?: string;
 }
 
 const parseInputBlocks = (tree: Root, options: RemarkFormOptions) => {
-    const {codeBlockIdentifier = "question", inputParser = yaml.loadAll} = options;
+  const { codeBlockIdentifier = 'question', inputParser = yaml.loadAll } =
+    options;
 
-    visit(tree, {lang: codeBlockIdentifier}, (node: Code) => {
-        // @ts-ignore
-        const inputSchemas: JSONSchema[] = inputParser(node.value);
-        const inputs = inputSchemas.map(getInput);
+  visit(tree, { lang: codeBlockIdentifier }, (node: Code) => {
+    // @ts-expect-error
+    const inputSchemas: JSONSchema[] = inputParser(node.value);
+    const inputs = inputSchemas.map(getInput);
 
-        // @ts-ignore
-        node.type = "HTML";
-        node.data = {
-            hName: "div",
-            hProperties: {
-                className: ["form-row"],
-                schema: inputSchemas
-            },
-            hChildren: inputs,
-        }
-    });
-}
-
-export const remarkForms = (options: RemarkFormOptions = {}) =>
-    (tree: Root) => {
-        parseInputBlocks(tree, options);
-        parseFieldsets(tree);
+    // @ts-expect-error
+    node.type = 'HTML';
+    node.data = {
+      hName: 'div',
+      hProperties: {
+        className: ['form-row'],
+        schema: inputSchemas
+      },
+      hChildren: inputs
     };
+  });
+};
+
+export const remarkForms =
+  (options: RemarkFormOptions = {}) =>
+  (tree: Root) => {
+    parseInputBlocks(tree, options);
+    parseFieldsets(tree);
+  };

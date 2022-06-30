@@ -1,86 +1,81 @@
-import { JSONSchema7, JSONSchema7TypeName } from "json-schema";
+import { JSONSchema7, JSONSchema7TypeName } from 'json-schema';
 
-
-export type CustomJSONSchemaTypeName = "quantity" | "currency" | "submit";
+export type CustomJSONSchemaTypeName = 'quantity' | 'currency' | 'submit';
 export type JSONSchemaTypeName = JSONSchema7TypeName | CustomJSONSchemaTypeName;
 
-
 interface RemarkFormsDisplay {
-  // type = "boolean"
-  label?: string
+  // Type = "boolean"
+  label?: string;
 
-  // type = "range" | "number"
-  min?: number
-  max?: number
-  step?: number
-  ticks?: boolean | number | (number | null)[]  // TODO: Use enum instead
-
-  // Radios & Checkboxes
-  variant?: "dropdown" | "autocomplete" | "button"
-
-  // type = "quantity"
-  units?: string
-
-}
-
-
-export interface JSONSchema extends Omit<JSONSchema7, "type" | "$id"> {
-  $id: string,
-  type: JSONSchemaTypeName,
-  placeholder?: string
-
-  // type = "boolean"
-  label?: string
-
-  // type = "range" | "number"
-  min?: number
-  max?: number
-  step?: number
-  ticks?: boolean | number | (number | null)[]  // TODO: Use enum instead
+  // Type = "range" | "number"
+  min?: number;
+  max?: number;
+  step?: number;
+  ticks?: boolean | number | Array<number | undefined>; // TODO: Use enum instead
 
   // Radios & Checkboxes
-  variant?: "dropdown" | "autocomplete" | "button"
+  variant?: 'dropdown' | 'autocomplete' | 'button';
 
-  // type = "quantity"
-  units?: string
-
-  display?: RemarkFormsDisplay
+  // Type = "quantity"
+  units?: string;
 }
 
+export interface JSONSchema extends Omit<JSONSchema7, 'type' | '$id'> {
+  $id: string;
+  type: JSONSchemaTypeName;
+  placeholder?: string;
 
-export type JSONSchemaStringFormat = "datetime" | "date" | "time";
-export type CustomJSONSchemaStringFormat = "week" | "month";
+  // Type = "boolean"
+  label?: string;
+
+  // Type = "range" | "number"
+  min?: number;
+  max?: number;
+  step?: number;
+  ticks?: boolean | number | Array<number | undefined>; // TODO: Use enum instead
+
+  // Radios & Checkboxes
+  variant?: 'dropdown' | 'autocomplete' | 'button';
+
+  // Type = "quantity"
+  units?: string;
+
+  display?: RemarkFormsDisplay;
+}
+
+export type JSONSchemaStringFormat = 'datetime' | 'date' | 'time';
+export type CustomJSONSchemaStringFormat = 'week' | 'month';
 export type StringFormat =
-  JSONSchemaStringFormat
+  | JSONSchemaStringFormat
   | CustomJSONSchemaStringFormat;
 
 export type BaseInputType =
-  "text"
-  | "datetime-local"
-  | "date"
-  | "time"
-  | "week"
-  | "month"
-  | "number"
-  | "range"
-  | "search"
-  | "file"
-  | "radio"
-  | "checkbox"
-  | "password"
-  | "submit"
-  | "tel"
-  | "email"
-  | "url"
-  | "color"
-  | "autocomplete";
+  | 'text'
+  | 'datetime-local'
+  | 'date'
+  | 'time'
+  | 'week'
+  | 'month'
+  | 'number'
+  | 'range'
+  | 'search'
+  | 'file'
+  | 'radio'
+  | 'checkbox'
+  | 'password'
+  | 'submit'
+  | 'tel'
+  | 'email'
+  | 'url'
+  | 'color'
+  | 'autocomplete';
 
-export type ExtraInputType = "textarea" | "select:one" | "select:multiple";
-export type CustomInputType = "likert" | "toggle" | "quantity" | "currency";
+export type ExtraInputType = 'textarea' | 'select:one' | 'select:multiple';
+export type CustomInputType = 'likert' | 'toggle' | 'quantity' | 'currency';
 
 export type InputType =
-  BaseInputType
+  | BaseInputType
   | ExtraInputType
   | CustomInputType
-  | null
+  | undefined
   | undefined;

@@ -1,18 +1,18 @@
-import {getRadioInput, isRadio, RadioSchema} from "./radio";
-import {getSelectInput} from "./select";
-import {getAutocompleteInput} from "./autocomplete";
-import {getCurrencyInput, getQuantityInput} from "./quantity";
-import {getToggleInput} from "./toggle";
-import {getRangeInput} from "./slider";
-import {getLikertInput, isLikert, LikertSchema} from "./likert";
-import {getTextInput, TextSchema} from "./text";
-import {getInputWithType} from "../utils";
-import {CheckboxSchema, getCheckboxInput, isCheckbox} from "./checkbox";
-import type {InputType, JSONSchema} from "../types";
-import type {Element as HastElements} from "hast";
+import type { Element as HastElements } from 'hast';
+import { getInputWithType } from '../utils';
+import type { InputType, JSONSchema } from '../types';
+import { getRadioInput, isRadio, RadioSchema } from './radio';
+import { getSelectInput } from './select';
+import { getAutocompleteInput } from './autocomplete';
+import { getCurrencyInput, getQuantityInput } from './quantity';
+import { getToggleInput } from './toggle';
+import { getRangeInput } from './slider';
+import { getLikertInput, isLikert, LikertSchema } from './likert';
+import { getTextInput, TextSchema } from './text';
+import { CheckboxSchema, getCheckboxInput, isCheckbox } from './checkbox';
 
-export * from "./likert";
-export * from "./choice";
+export * from './likert';
+export * from './choice';
 
 /**
  * Note on "type":
@@ -26,41 +26,67 @@ export * from "./choice";
  * `"select"`.
  */
 export const getInputType = (schema: JSONSchema): InputType => {
-    if (isRadio(schema)) {
-        if (schema.display?.variant === "dropdown") {
-            return "select:one";
-        } else if (schema.display?.variant === "autocomplete") {
-            return "autocomplete";
-        }
-        return "radio";
-    } else if (isCheckbox(schema)) {
-        if (schema.display?.variant === "dropdown") {
-            return "select:multiple";
-        }
-        return "checkbox";
-    } else if (isLikert(schema)) {
-        return "likert"
-    } else if (schema.type === "string") {
-        if (schema.format === "datetime") {
-            return "datetime-local";
-        } else if (schema.format === "tel") {
-            return "tel";
-        } else if (schema.format === "uri") {
-            return "url";
-        } else if (schema.format === "color") {
-            return "color";
-        }
-        return "text";
-    } else if (schema.type === "boolean") {
-        return "toggle";
-    } else if (schema.type === "array" || schema.type === "object" || schema.type === "null") {
-        throw `Cannot convert schema of type ${schema.type} to a valid input type.`
-    } else if (schema.type === "integer") {
-        return "number";
+  if (isRadio(schema)) {
+    if (schema.display?.variant === 'dropdown') {
+      return 'select:one';
     }
 
-    return schema?.type;
-}
+    if (schema.display?.variant === 'autocomplete') {
+      return 'autocomplete';
+    }
+
+    return 'radio';
+  }
+
+  if (isCheckbox(schema)) {
+    if (schema.display?.variant === 'dropdown') {
+      return 'select:multiple';
+    }
+
+    return 'checkbox';
+  }
+
+  if (isLikert(schema)) {
+    return 'likert';
+  }
+
+  if (schema.type === 'string') {
+    if (schema.format === 'datetime') {
+      return 'datetime-local';
+    }
+
+    if (schema.format === 'tel') {
+      return 'tel';
+    }
+
+    if (schema.format === 'uri') {
+      return 'url';
+    }
+
+    if (schema.format === 'color') {
+      return 'color';
+    }
+
+    return 'text';
+  }
+
+  if (schema.type === 'boolean') {
+    return 'toggle';
+  }
+
+  if (
+    schema.type === 'array' ||
+    schema.type === 'object' ||
+    schema.type === 'null'
+  ) {
+    throw `Cannot convert schema of type ${schema.type} to a valid input type.`;
+  } else if (schema.type === 'integer') {
+    return 'number';
+  }
+
+  return schema?.type;
+};
+
 /**
  * This returns a hast representation of the input for a given schema.
  *
@@ -70,33 +96,33 @@ export const getInputType = (schema: JSONSchema): InputType => {
  *       gross spaghetti tightly coupled crap.
  */
 export const getInput = (schema: JSONSchema): HastElements => {
-    const type = getInputType(schema)
+  const type = getInputType(schema);
 
-    switch (type) {
-        case "radio":
-            return getRadioInput(schema as RadioSchema);
-        case "checkbox":
-            return getCheckboxInput(schema as CheckboxSchema);
-        case "select:one":
-            return getSelectInput(schema, (schema as RadioSchema).enum);
-        case "select:multiple":
-            return getSelectInput(schema, (schema as CheckboxSchema).items.enum);
-        case "autocomplete":
-            return getAutocompleteInput(schema as RadioSchema);
-        case "quantity":
-            return getQuantityInput(schema);
-        case "currency":
-            return getCurrencyInput(schema);
-        case "toggle":
-            return getToggleInput(schema);
-        case "range":
-            return getRangeInput(schema);
-        case "likert":
-            return getLikertInput(schema as LikertSchema);
-        case "text":
-        case undefined:
-            return getTextInput(schema as TextSchema)
-    }
+  switch (type) {
+    case 'radio':
+      return getRadioInput(schema as RadioSchema);
+    case 'checkbox':
+      return getCheckboxInput(schema as CheckboxSchema);
+    case 'select:one':
+      return getSelectInput(schema, (schema as RadioSchema).enum);
+    case 'select:multiple':
+      return getSelectInput(schema, (schema as CheckboxSchema).items.enum);
+    case 'autocomplete':
+      return getAutocompleteInput(schema as RadioSchema);
+    case 'quantity':
+      return getQuantityInput(schema);
+    case 'currency':
+      return getCurrencyInput(schema);
+    case 'toggle':
+      return getToggleInput(schema);
+    case 'range':
+      return getRangeInput(schema);
+    case 'likert':
+      return getLikertInput(schema as LikertSchema);
+    case 'text':
+    case undefined:
+      return getTextInput(schema as TextSchema);
+  }
 
-    return getInputWithType(schema, type);
-}
+  return getInputWithType(schema, type);
+};

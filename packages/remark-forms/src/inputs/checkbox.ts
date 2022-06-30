@@ -1,21 +1,25 @@
-import {Choice, getListInput} from "./choice";
-import type {Element as HastElements} from "hast";
-import type {JSONSchema} from "../types";
-import type {JSONSchema7} from "json-schema";
+import type { Element as HastElements } from 'hast';
+import type { JSONSchema7 } from 'json-schema';
+import type { JSONSchema } from '../types';
+import { Choice, getListInput } from './choice';
 
-export interface CheckboxItemsSchema extends Omit<JSONSchema7, "enum"> {
-    enum: Choice[]
+export interface CheckboxItemsSchema extends Omit<JSONSchema7, 'enum'> {
+  enum: Choice[];
 }
 
-export interface CheckboxSchema extends Omit<JSONSchema, "items"> {
-    items: CheckboxItemsSchema
+export interface CheckboxSchema extends Omit<JSONSchema, 'items'> {
+  items: CheckboxItemsSchema;
 }
 
-// @ts-ignore
+// @ts-expect-error
 export function isCheckbox(schema: JSONSchema): schema is CheckboxSchema {
-    return schema.type === "array" && !!schema?.items && schema.items !== true && "enum" in schema.items
+  return (
+    schema.type === 'array' &&
+    Boolean(schema?.items) &&
+    schema.items !== true &&
+    'enum' in schema.items
+  );
 }
 
-export const getCheckboxInput = (schema: CheckboxSchema): HastElements => {
-    return getListInput(schema, <Choice[]>schema.items?.enum, "checkbox");
-}
+export const getCheckboxInput = (schema: CheckboxSchema): HastElements =>
+  getListInput(schema, schema.items?.enum, 'checkbox');

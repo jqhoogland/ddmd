@@ -1,23 +1,28 @@
-import React, { useRef } from "react";
-import { ObjectSchema, remarkForms } from "@ddmd/remark-forms/src";
-import { remarkPlotly } from "@ddmd/remark-plotly/src";
-import ReactMarkdown from "react-markdown";
-import { ReactMarkdownOptions } from "react-markdown/lib/react-markdown";
-import { useForm } from "./hooks";
-import { useGraphs } from "./hooks/remark-plotly";
-
+import React, { useRef } from 'react';
+import { ObjectSchema, remarkForms } from '@ddmd/remark-forms/src';
+import { remarkPlotly } from '@ddmd/remark-plotly/src';
+import ReactMarkdown from 'react-markdown';
+import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
+import { useForm } from './hooks';
+import { useGraphs } from './hooks/remark-plotly';
 
 interface RemarkFormProps extends ReactMarkdownOptions {
-  onChange?: (update: { state: Record<string, any>, schema: ObjectSchema | undefined }) => void;
+  onChange?: (update: {
+    state: Record<string, any>;
+    schema: ObjectSchema | undefined;
+  }) => void;
 }
-
 
 /**
  * A `<form>` wrapper around `<RemarkMarkdown/>` that adds support for
  * `remark-forms` and `remark-plotly` & that tracks form state.
  */
-const RemarkDDMD: React.FC<RemarkFormProps> = ({ children, onChange, ...props }) => {
-  const ref = useRef<HTMLFormElement | null>(null);
+const RemarkDDMD: React.FC<RemarkFormProps> = ({
+  children,
+  onChange,
+  ...props
+}) => {
+  const ref = useRef<HTMLFormElement | undefined>(null);
   const { state, schema } = useForm(ref, children);
   useGraphs(state, children);
 

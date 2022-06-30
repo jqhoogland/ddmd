@@ -1,16 +1,15 @@
-import {Choice, getListInput} from "./choice";
-import type {JSONSchema} from "../types";
-import type {Element as HastElements} from "hast";
+import type { Element as HastElements } from 'hast';
+import type { JSONSchema } from '../types';
+import { Choice, getListInput } from './choice';
 
-
-export interface RadioSchema extends Omit<JSONSchema, "enum"> {
-    enum: Choice[]
+export interface RadioSchema extends Omit<JSONSchema, 'enum'> {
+  enum: Choice[];
 }
 
-// @ts-ignore
+// @ts-expect-error
 export function isRadio(schema: JSONSchema): schema is RadioSchema {
-    return "enum" in schema;
+  return 'enum' in schema;
 }
 
 export const getRadioInput = (schema: RadioSchema): HastElements =>
-    getListInput(schema, <Choice[]>schema.enum, "radio")
+  getListInput(schema, schema.enum, 'radio');
