@@ -79,6 +79,8 @@ const Home: NextPage<{ children: string }> = ({ children }) => {
 
 export default Home;
 
+
+
 export const getStaticProps: GetStaticProps = async (context) => {
   const dataPath = path.join(
     process.cwd(),
